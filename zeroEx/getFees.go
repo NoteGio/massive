@@ -42,7 +42,7 @@ func (*getFees) Name() string     { return "getFees" }
 func (*getFees) Synopsis() string { return "Set fees on incoming orders" }
 func (*getFees) Usage() string {
   return `msv 0x getFees [--target RELAYER_URL] [--maker-share 1] [--input FILE] [--output FILE]:
-  Call 0x subcommands
+  Get fees from the target relayer and set them on the order
 `
 }
 

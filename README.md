@@ -12,7 +12,7 @@ An example pipeline:
     # Get fees from the relayer
     msv 0x getFees --target https://api.openrelay.xyz | \
     # Add the current timestamp as a nonce
-    msv 0x timestampNonce | \
+    msv 0x timestampSalt | \
     # Set the expiration date for 10 days in the future
     msv 0x expiresIn 864000 | \
     # Sign with the provided key
