@@ -1,0 +1,563 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "USkefO0g1U9mr+8hagv3fpSkrxg=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aristanetworks/goarista/monotime",
+			"path": "github.com/aristanetworks/goarista/monotime",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "rRZbZbRFXiRN25up38799OeziZw=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws",
+			"path": "github.com/aws/aws-sdk-go/aws",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "Y9W+4GimK4Fuxq+vyIskVYFRnX4=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/awserr",
+			"path": "github.com/aws/aws-sdk-go/aws/awserr",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "yyYr41HZ1Aq0hWc3J5ijXwYEcac=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/awsutil",
+			"path": "github.com/aws/aws-sdk-go/aws/awsutil",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "9nE/FjZ4pYrT883KtV2/aI+Gayo=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/client",
+			"path": "github.com/aws/aws-sdk-go/aws/client",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "ieAJ+Cvp/PKv1LpUEnUXpc3OI6E=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/client/metadata",
+			"path": "github.com/aws/aws-sdk-go/aws/client/metadata",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "7/8j/q0TWtOgXyvEcv4B2Dhl00o=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/corehandlers",
+			"path": "github.com/aws/aws-sdk-go/aws/corehandlers",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "Y+cPwQL0dZMyqp3wI+KJWmA9KQ8=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/credentials",
+			"path": "github.com/aws/aws-sdk-go/aws/credentials",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "u3GOAJLmdvbuNUeUEcZSEAOeL/0=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
+			"path": "github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "NUJUTWlc1sV8b7WjfiYc4JZbXl0=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/credentials/endpointcreds",
+			"path": "github.com/aws/aws-sdk-go/aws/credentials/endpointcreds",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "JEYqmF83O5n5bHkupAzA6STm0no=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/credentials/stscreds",
+			"path": "github.com/aws/aws-sdk-go/aws/credentials/stscreds",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "OnU/n7R33oYXiB4SAGd5pK7I0Bs=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/defaults",
+			"path": "github.com/aws/aws-sdk-go/aws/defaults",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "/EXbk/z2TWjWc1Hvb4QYs3Wmhb8=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/ec2metadata",
+			"path": "github.com/aws/aws-sdk-go/aws/ec2metadata",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "aOgB3+hNeX2svLhaX373ToSkhTg=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/endpoints",
+			"path": "github.com/aws/aws-sdk-go/aws/endpoints",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "9GvAyILJ7g+VUg8Ef5DsT5GuYsg=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/request",
+			"path": "github.com/aws/aws-sdk-go/aws/request",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "HcGL4e6Uep4/80eCUI5xkcWjpQ0=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/session",
+			"path": "github.com/aws/aws-sdk-go/aws/session",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "iU00ZjhAml/13g+1YXT21IqoXqg=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/aws/signer/v4",
+			"path": "github.com/aws/aws-sdk-go/aws/signer/v4",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "04ypv4x12l4q0TksA1zEVsmgpvw=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/internal/shareddefaults",
+			"path": "github.com/aws/aws-sdk-go/internal/shareddefaults",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "NStHCXEvYqG72GknZyv1jaKaeH0=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol",
+			"path": "github.com/aws/aws-sdk-go/private/protocol",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "yHfT5DTbeCLs4NE2Rgnqrhe15ls=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol/json/jsonutil",
+			"path": "github.com/aws/aws-sdk-go/private/protocol/json/jsonutil",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "R00RL5jJXRYq1iiK1+PGvMfvXyM=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol/jsonrpc",
+			"path": "github.com/aws/aws-sdk-go/private/protocol/jsonrpc",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "ZqY5RWavBLWTo6j9xqdyBEaNFRk=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol/query",
+			"path": "github.com/aws/aws-sdk-go/private/protocol/query",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "9V1PvtFQ9MObZTc3sa86WcuOtOU=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol/query/queryutil",
+			"path": "github.com/aws/aws-sdk-go/private/protocol/query/queryutil",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "pkeoOfZpHRvFG/AOZeTf0lwtsFg=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol/rest",
+			"path": "github.com/aws/aws-sdk-go/private/protocol/rest",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "0qYPUga28aQVkxZgBR3Z86AbGUQ=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil",
+			"path": "github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "ijz0rBDeR6JP/06S+97k84FRYxc=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/service/ssm",
+			"path": "github.com/aws/aws-sdk-go/service/ssm",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "W1oFtpaT4TWIIJrAvFcn/XdcT7g=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/aws/aws-sdk-go/service/sts",
+			"path": "github.com/aws/aws-sdk-go/service/sts",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "gZQ6HheWahvZzIc3phBnOwoWHjE=",
+			"origin": "github.com/ethereum/go-ethereum/vendor/github.com/btcsuite/btcd/btcec",
+			"path": "github.com/btcsuite/btcd/btcec",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "8RUYYNIgmreU18OOk4PFfOnW9Nc=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum",
+			"path": "github.com/ethereum/go-ethereum",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "l357/XwKHU9+GQuf7mg+pJe2HkQ=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/accounts",
+			"path": "github.com/ethereum/go-ethereum/accounts",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "OKSef0QZSaPCm5tFV0fj/MuEbdk=",
+			"path": "github.com/ethereum/go-ethereum/accounts/abi",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "vwqYRZ2bYbD7FPHCpRkg5YLuehs=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/accounts/abi/bind",
+			"path": "github.com/ethereum/go-ethereum/accounts/abi/bind",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "tot92t+belOwTck+pKqFogQ8lhQ=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/accounts/keystore",
+			"path": "github.com/ethereum/go-ethereum/accounts/keystore",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "UyE/zzupdUo8ZK7w8d8In++s7SQ=",
+			"path": "github.com/ethereum/go-ethereum/common",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "tMtGtURWx29lWZYsLtLOQaPvGqs=",
+			"path": "github.com/ethereum/go-ethereum/common/hexutil",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "Hd1Y5DkzYULQzJlSgYv2w5SiEAo=",
+			"path": "github.com/ethereum/go-ethereum/common/math",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "auKC662e4M4mXDReh+667bhRdfU=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/common/mclock",
+			"path": "github.com/ethereum/go-ethereum/common/mclock",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "VmI9efJqHFoYmx6AcbTsGh3lA9E=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/core/types",
+			"path": "github.com/ethereum/go-ethereum/core/types",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "PSx8ACgC3L7WzkPZfHJkukAuMEs=",
+			"path": "github.com/ethereum/go-ethereum/crypto",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "W0XLNKJu61SBJW5LfVR3tG+U7ro=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/crypto/randentropy",
+			"path": "github.com/ethereum/go-ethereum/crypto/randentropy",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "LS/Qn4CAVXw3zDAiURIS9LIvKxg=",
+			"path": "github.com/ethereum/go-ethereum/crypto/secp256k1",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "pQzUVRi0z/3Z4FpRyExSg1ROLSA=",
+			"path": "github.com/ethereum/go-ethereum/crypto/sha3",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "Bd11FpWFv3y8EWi0kD9pzoReZbk=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/ethclient",
+			"path": "github.com/ethereum/go-ethereum/ethclient",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "O56Cc6a0S2pK0oO9wZYO71xXeRM=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/event",
+			"path": "github.com/ethereum/go-ethereum/event",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "jYu7qwMf5Hc47JdZFx9aZPg9x3A=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/log",
+			"path": "github.com/ethereum/go-ethereum/log",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "AdVwi8iRWbsP6QUgHDh53xEDMnc=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/params",
+			"path": "github.com/ethereum/go-ethereum/params",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "f2Asra5yXCMDxwx/TF6m4h3ZqOw=",
+			"path": "github.com/ethereum/go-ethereum/rlp",
+			"revision": "e85c8b046f7d3ae725837b0352b6c77ee6488b7b",
+			"revisionTime": "2018-02-07T20:33:20Z"
+		},
+		{
+			"checksumSHA1": "P0ha/w/6MkjxlxhJemCSUAY1NVE=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/rpc",
+			"path": "github.com/ethereum/go-ethereum/rpc",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "KtkZ0F3zQBTMWNIDhG/KaAksDdU=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/ethereum/go-ethereum/trie",
+			"path": "github.com/ethereum/go-ethereum/trie",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "VvZKmbuBN1QAG699KduTdmSPwA4=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/go-ini/ini",
+			"path": "github.com/go-ini/ini",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "KZ3QD2QgUS4RcoKiA3mn5pSlJxQ=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/go-stack/stack",
+			"path": "github.com/go-stack/stack",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "aUP56M063EhOLTlLBpEyvyK2MvM=",
+			"path": "github.com/google/subcommands",
+			"revision": "a3682377147edf596d303faabd89f81977b3f678",
+			"revisionTime": "2018-03-05T17:16:00Z"
+		},
+		{
+			"checksumSHA1": "0ZrwvB6KoGPj2PoDNSEJwxQ6Mog=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/jmespath/go-jmespath",
+			"path": "github.com/jmespath/go-jmespath",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "kGK/sQuTvRc22PO2MVA1yfs+ves=",
+			"path": "github.com/notegio/openrelay/accounts",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "SRmDImnhbY1nCshDfeQ/WX+Z4RU=",
+			"path": "github.com/notegio/openrelay/affiliates",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "RgyZAulkV4jTHp5izmCX6tC2nS0=",
+			"path": "github.com/notegio/openrelay/aws",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "CasuU3SOXiWr6jOxwTvNdLtqXEY=",
+			"path": "github.com/notegio/openrelay/channels",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "vEeru7o+FJCoeLo5K7Xs9OuHuqQ=",
+			"path": "github.com/notegio/openrelay/common",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "DuHAvFgaCppWe4/2t4WZ4ox+gP0=",
+			"path": "github.com/notegio/openrelay/config",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "hw6+eqqUJRijTUUbMjE9nyD89oE=",
+			"path": "github.com/notegio/openrelay/exchangecontract",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "c5UyEdlM4o4eP7jYBUQ1VqKpBqw=",
+			"path": "github.com/notegio/openrelay/ingest",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "sP3DuTIWIRSTc6L1d14cHItFUPI=",
+			"path": "github.com/notegio/openrelay/types",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "Se195FlZ160eaEk/uVx4KdTPSxU=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/pborman/uuid",
+			"path": "github.com/pborman/uuid",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "KAzbLjI9MzW2tjfcAsK75lVRp6I=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/rcrowley/go-metrics",
+			"path": "github.com/rcrowley/go-metrics",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "yOMpVYuaPAtsMIo9DvQP8WZqxQs=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/rjeczalik/notify",
+			"path": "github.com/rjeczalik/notify",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "LjPdvMphElL0GOVNQCsmZMVgWIw=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/rs/cors",
+			"path": "github.com/rs/cors",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "hCRfPlNpqv8tvVivLzmXsoUOf1c=",
+			"origin": "github.com/notegio/openrelay/vendor/github.com/rs/xhandler",
+			"path": "github.com/rs/xhandler",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "1MGpGDQqnUoRpv7VEcQrXOBydXE=",
+			"origin": "github.com/notegio/openrelay/vendor/golang.org/x/crypto/pbkdf2",
+			"path": "golang.org/x/crypto/pbkdf2",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "E8pDMGySfy5Mw+jzXOkOxo35bww=",
+			"origin": "github.com/notegio/openrelay/vendor/golang.org/x/crypto/scrypt",
+			"path": "golang.org/x/crypto/scrypt",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"origin": "github.com/notegio/openrelay/vendor/golang.org/x/net/context",
+			"path": "golang.org/x/net/context",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "7EZyXN0EmZLgGxZxK01IJua4c8o=",
+			"origin": "github.com/notegio/openrelay/vendor/golang.org/x/net/websocket",
+			"path": "golang.org/x/net/websocket",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "ikor+YKJu2eKwyFteBWhsb8IGy8=",
+			"origin": "github.com/notegio/openrelay/vendor/golang.org/x/tools/go/ast/astutil",
+			"path": "golang.org/x/tools/go/ast/astutil",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "q7d529ueItc/mhXnJ1J9/FUCYu4=",
+			"origin": "github.com/notegio/openrelay/vendor/golang.org/x/tools/imports",
+			"path": "golang.org/x/tools/imports",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "+4r0PnLwwyhO5/jvU5R/TEJb4kA=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/bsm/ratelimit.v1",
+			"path": "gopkg.in/bsm/ratelimit.v1",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "NGg7/qIJVUfXi7xnEyyDLocdi6Y=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/fatih/set.v0",
+			"path": "gopkg.in/fatih/set.v0",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "DQXNV0EivoHm4q+bkdahYXrjjfE=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/karalabe/cookiejar.v2/collections/prque",
+			"path": "gopkg.in/karalabe/cookiejar.v2/collections/prque",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "0xgs8lwcWLUffemlj+SsgKlxvDU=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/natefinch/npipe.v2",
+			"path": "gopkg.in/natefinch/npipe.v2",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "/EL/UuzIPObHgESjkBMaD4gaXOw=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/redis.v3",
+			"path": "gopkg.in/redis.v3",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "b4Z72l8sq4xuWhR+nM5vbLQIv+o=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/redis.v3/internal",
+			"path": "gopkg.in/redis.v3/internal",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "tNI/mAuqqQqfYU4vuJghUroIts4=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/redis.v3/internal/consistenthash",
+			"path": "gopkg.in/redis.v3/internal/consistenthash",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "JvqkSear94dc+NgofRqBAUmLcN0=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/redis.v3/internal/hashtag",
+			"path": "gopkg.in/redis.v3/internal/hashtag",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		},
+		{
+			"checksumSHA1": "ROpD4/McQLnnxpPenjA0mEZfTL8=",
+			"origin": "github.com/notegio/openrelay/vendor/gopkg.in/redis.v3/internal/pool",
+			"path": "gopkg.in/redis.v3/internal/pool",
+			"revision": "7a19f3a88699ac337ae824b4080896224b3e79ee",
+			"revisionTime": "2018-04-04T17:27:49Z"
+		}
+	],
+	"rootPath": "github.com/notegio/massive"
+}
