@@ -55,10 +55,10 @@ func (p *getFees) SetFlags(f *flag.FlagSet) {
 
 func (p *getFees) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
   utils.SetIO(p)
-  return main(p.targetURL, p.inputFile, p.outputFile, p.makerShare)
+  return GetFeesMain(p.targetURL, p.inputFile, p.outputFile, p.makerShare)
 }
 
-func main(targetURL string, inputFile io.Reader, outputFile io.Writer, makerShare float64) subcommands.ExitStatus {
+func GetFeesMain(targetURL string, inputFile io.Reader, outputFile io.Writer, makerShare float64) subcommands.ExitStatus {
   targetURL = strings.TrimSuffix(targetURL, "/")
   for order := range orderScanner(inputFile) {
     feeInput := &ingest.FeeInputPayload{}
@@ -104,13 +104,12 @@ func main(targetURL string, inputFile io.Reader, outputFile io.Writer, makerShar
       log.Printf("TakerFee not a valid integer: '%v'", fees.TakerFee)
       return subcommands.ExitFailure
     }
-    if makerShare > 0 && makerShare < 1 {
+    if makerShare >= 0 && makerShare < 1 {
       totalFee := new(big.Int).Add(makerFee, takerFee)
       makerPercent := big.NewInt(int64(makerShare * 100))
       makerFee = new(big.Int).Div(new(big.Int).Mul(totalFee, makerPercent), big.NewInt(100))
       takerFee = new(big.Int).Sub(totalFee, makerFee)
     }
-    // TODO: Getting build errors from the abi import
     copy(order.MakerFee[:], abi.U256(makerFee))
     copy(order.TakerFee[:], abi.U256(takerFee))
     _, err = hex.Decode(order.FeeRecipient[:], []byte(fees.FeeRecipient)[2:])
