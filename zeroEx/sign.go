@@ -20,6 +20,7 @@ type signOrder struct {
   inputFile *os.File
   outputFile *os.File
   errOnMismatch bool
+  replaceOnMismatch bool
 }
 
 func (p *signOrder) FileNames() (string, string) {
@@ -42,6 +43,7 @@ func (p *signOrder) SetFlags(f *flag.FlagSet) {
   f.StringVar(&p.inputFileName, "input", "", "Input file [stdin]")
   f.StringVar(&p.outputFileName, "output", "", "Output file [stdout]")
   f.BoolVar(&p.errOnMismatch, "err-on-mismatch", false, "Exit with a non-zero exit code if an order's Maker does not match the provided key")
+  f.BoolVar(&p.replaceOnMismatch, "replace-on-mismatch", false, "Replace the maker address if an order's maker does not match the provided key. If the maker does not match the provided key and this flag is not set, the order will pass through unsigned.")
 }
 
 func (p *signOrder) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -51,14 +53,23 @@ func (p *signOrder) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}
     log.Printf("Error loading key: %v", err.Error())
     return subcommands.ExitFailure
   }
-  return SignOrderMain(p.inputFile, p.outputFile, privKey, p.errOnMismatch)
+  return SignOrderMain(p.inputFile, p.outputFile, privKey, p.errOnMismatch, p.replaceOnMismatch)
 }
-func SignOrderMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.PrivateKey, errOnMismatch bool) subcommands.ExitStatus {
+func SignOrderMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.PrivateKey, errOnMismatch, replaceOnMismatch bool) subcommands.ExitStatus {
+  if errOnMismatch && replaceOnMismatch {
+    log.Printf("Specify at most one of --err-on-mismatch or --replace-on-mismatch")
+  }
   address := crypto.PubkeyToAddress(key.PublicKey)
   for order := range orderScanner(inputFile) {
-    if errOnMismatch && !bytes.Equal(address[:], order.Maker[:]) {
-      log.Printf("Private key address does not match maker address")
-      return subcommands.ExitFailure
+    if !bytes.Equal(address[:], order.Maker[:]) {
+      if errOnMismatch {
+        log.Printf("Private key address does not match maker address")
+        return subcommands.ExitFailure
+      }
+      if !replaceOnMismatch {
+        utils.WriteRecord(order, outputFile)
+        continue
+      }
     }
     copy(order.Maker[:], address[:])
     copy(order.Signature.Hash[:], order.Hash())
