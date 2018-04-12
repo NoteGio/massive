@@ -14,7 +14,7 @@ An example pipeline:
     # Add the current timestamp as a nonce
     msv 0x timestampSalt | \
     # Set the expiration date for 10 days in the future
-    msv 0x expiration 864000 --duration | \
+    msv 0x expiration --duration 864000 | \
     # Sign with the provided key
     msv 0x sign $KEY_FILE | \
     # Verify that the transaction is fillable

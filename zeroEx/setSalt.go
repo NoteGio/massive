@@ -33,7 +33,7 @@ func (p *setSalt) SetIOFiles(inputFile, outputFile *os.File) {
 func (*setSalt) Name() string     { return "setSalt" }
 func (*setSalt) Synopsis() string { return "Set the nonce on orders according to the current timestamp" }
 func (*setSalt) Usage() string {
-  return `msv 0x setSalt [--random] [--input FILE] [--output FILE]:
+  return `msv 0x setSalt [--random] [--value=INT] [--input FILE] [--output FILE]:
   Add a salt to the order
 `
 }

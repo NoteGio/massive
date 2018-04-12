@@ -27,6 +27,7 @@ func (p *ZeroExCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}
   commander.Register(&setSalt{}, "")
   commander.Register(&expiration{}, "")
   commander.Register(&signOrder{}, "")
+  commander.Register(&upload{}, "")
   commander.Register(commander.HelpCommand(), "")
   commander.Register(commander.FlagsCommand(), "")
   commander.Register(commander.CommandsCommand(), "")
