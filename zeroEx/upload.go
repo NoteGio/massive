@@ -53,7 +53,9 @@ func (p *upload) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) s
 
 func UploadMain(targetURL string, inputFile io.Reader, outputFile io.Writer) subcommands.ExitStatus {
   targetURL = strings.TrimSuffix(targetURL, "/")
+	counter := 0
   for order := range orderScanner(inputFile) {
+		counter++
     data, err := json.Marshal(order)
     if err != nil {
       log.Printf("Error serializing order: %v", err.Error())
@@ -71,5 +73,6 @@ func UploadMain(targetURL string, inputFile io.Reader, outputFile io.Writer) sub
       return subcommands.ExitFailure
     }
   }
+	log.Printf("Successfully uploaded %v orders to %v", counter, targetURL)
   return subcommands.ExitSuccess
 }
