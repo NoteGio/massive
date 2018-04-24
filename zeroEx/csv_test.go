@@ -1,14 +1,14 @@
 package zeroEx_test
 
 import (
-  "encoding/json"
+	"bufio"
+	"bytes"
+	"encoding/json"
+	"github.com/google/subcommands"
+	"github.com/notegio/massive/zeroEx"
+	"github.com/notegio/openrelay/types"
 	"math/big"
-  "github.com/notegio/massive/zeroEx"
-  "github.com/notegio/openrelay/types"
-  "github.com/google/subcommands"
-  "testing"
-  "bufio"
-  "bytes"
+	"testing"
 )
 
 func TestCsvProcess(t *testing.T) {
@@ -19,14 +19,14 @@ func TestCsvProcess(t *testing.T) {
 	outputBuffer := &bytes.Buffer{}
 	outputFile := bufio.NewWriter(outputBuffer)
 	if status := zeroEx.CSVMain(inputFile, outputFile); status != subcommands.ExitSuccess {
-    t.Fatalf("Bad exitcode: %v", status)
-  }
-  outputFile.Flush()
-  processedOrder := &types.Order{}
-  err := json.Unmarshal(outputBuffer.Bytes(), processedOrder)
+		t.Fatalf("Bad exitcode: %v", status)
+	}
+	outputFile.Flush()
+	processedOrder := &types.Order{}
+	err := json.Unmarshal(outputBuffer.Bytes(), processedOrder)
 	if err != nil {
-    t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
-  }
+		t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
+	}
 	if processedOrder.MakerToken.String() != "0xa1df88ea6a08722055250ed65601872e59cddfaa" {
 		t.Errorf("Unexpected MakerToken value: %v", processedOrder.MakerToken)
 	}
@@ -51,14 +51,14 @@ func TestCsvAllFieldsProcess(t *testing.T) {
 	outputBuffer := &bytes.Buffer{}
 	outputFile := bufio.NewWriter(outputBuffer)
 	if status := zeroEx.CSVMain(inputFile, outputFile); status != subcommands.ExitSuccess {
-    t.Fatalf("Bad exitcode: %v", status)
-  }
-  outputFile.Flush()
-  processedOrder := &types.Order{}
-  err := json.Unmarshal(outputBuffer.Bytes(), processedOrder)
+		t.Fatalf("Bad exitcode: %v", status)
+	}
+	outputFile.Flush()
+	processedOrder := &types.Order{}
+	err := json.Unmarshal(outputBuffer.Bytes(), processedOrder)
 	if err != nil {
-    t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
-  }
+		t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
+	}
 	if processedOrder.MakerToken.String() != "0xa1df88ea6a08722055250ed65601872e59cddfaa" {
 		t.Errorf("Unexpected MakerToken value: %v", processedOrder.MakerToken)
 	}

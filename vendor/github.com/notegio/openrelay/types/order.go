@@ -48,7 +48,7 @@ func (data *Uint256) Scan(src interface{}) error {
 	}
 }
 
-func (data *Uint256) String() (string) {
+func (data *Uint256) String() string {
 	bigInt := new(big.Int).SetBytes(data[:])
 	return bigInt.String()
 }

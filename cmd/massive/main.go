@@ -1,17 +1,17 @@
 package main
 
 import (
-  "context"
-  "flag"
-  "os"
-  "github.com/google/subcommands"
-  "github.com/notegio/massive/zeroEx"
+	"context"
+	"flag"
+	"github.com/google/subcommands"
+	"github.com/notegio/massive/zeroEx"
+	"os"
 )
 
 func main() {
-  subcommands.Register(&zeroEx.ZeroExCmd{}, "")
+	subcommands.Register(&zeroEx.ZeroExCmd{}, "")
 
-  flag.Parse()
-  ctx := context.Background()
-  os.Exit(int(subcommands.Execute(ctx)))
+	flag.Parse()
+	ctx := context.Background()
+	os.Exit(int(subcommands.Execute(ctx)))
 }

@@ -5,12 +5,12 @@ import (
 	"encoding/hex"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/notegio/openrelay/types"
-	"github.com/notegio/openrelay/exchangecontract"
 	orCommon "github.com/notegio/openrelay/common"
+	"github.com/notegio/openrelay/exchangecontract"
+	"github.com/notegio/openrelay/types"
 	"gopkg.in/redis.v3"
-	"time"
 	"log"
+	"time"
 )
 
 type FeeToken interface {
@@ -23,7 +23,7 @@ type staticFeeToken struct {
 }
 
 func (feeToken *staticFeeToken) Get(order *types.Order) (*types.Address, error) {
-		return feeToken.value, nil
+	return feeToken.value, nil
 }
 
 func (feeToken *staticFeeToken) Set(address *types.Address) error {
@@ -38,7 +38,7 @@ type redisFeeToken struct {
 }
 
 type rpcFeeToken struct {
-	conn bind.ContractBackend
+	conn             bind.ContractBackend
 	exchangeTokenMap map[types.Address]*types.Address
 }
 

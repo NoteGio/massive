@@ -1,52 +1,52 @@
 package zeroEx
 
 import (
-  "flag"
-  "context"
-  "os"
+	"context"
 	"encoding/csv"
 	"encoding/hex"
-  "github.com/google/subcommands"
-  "github.com/notegio/massive/utils"
-  "github.com/notegio/openrelay/types"
-  "github.com/ethereum/go-ethereum/accounts/abi"
-  "math/big"
-  "io"
+	"flag"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/google/subcommands"
+	"github.com/notegio/massive/utils"
+	"github.com/notegio/openrelay/types"
+	"io"
 	"log"
+	"math/big"
+	"os"
 	"strconv"
 )
 
 type csvReader struct {
-  inputFileName string
-  outputFileName string
-  inputFile *os.File
-  outputFile *os.File
+	inputFileName  string
+	outputFileName string
+	inputFile      *os.File
+	outputFile     *os.File
 }
 
 func (p *csvReader) FileNames() (string, string) {
-  return p.inputFileName, p.outputFileName
+	return p.inputFileName, p.outputFileName
 }
 
 func (p *csvReader) SetIOFiles(inputFile, outputFile *os.File) {
-  p.inputFile, p.outputFile = inputFile, outputFile
+	p.inputFile, p.outputFile = inputFile, outputFile
 }
 
 func (*csvReader) Name() string     { return "csv" }
 func (*csvReader) Synopsis() string { return "Parse orders out of a CSV" }
 func (*csvReader) Usage() string {
-  return `msv 0x csv [--input FILE] [--output FILE]:
+	return `msv 0x csv [--input FILE] [--output FILE]:
   Parse orders out of a CSV and add them to a stream
 `
 }
 
 func (p *csvReader) SetFlags(f *flag.FlagSet) {
-  f.StringVar(&p.inputFileName, "input", "", "Input file [stdin]")
-  f.StringVar(&p.outputFileName, "output", "", "Output file [stdout]")
+	f.StringVar(&p.inputFileName, "input", "", "Input file [stdin]")
+	f.StringVar(&p.outputFileName, "output", "", "Output file [stdout]")
 }
 
 func (p *csvReader) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-  utils.SetIO(p)
-  return CSVMain(p.inputFile, p.outputFile)
+	utils.SetIO(p)
+	return CSVMain(p.inputFile, p.outputFile)
 }
 
 func CSVMain(inputFile io.Reader, outputFile io.Writer) subcommands.ExitStatus {
@@ -224,5 +224,5 @@ func CSVMain(inputFile io.Reader, outputFile io.Writer) subcommands.ExitStatus {
 		}
 		utils.WriteRecord(order, outputFile)
 	}
-  return subcommands.ExitSuccess
+	return subcommands.ExitSuccess
 }

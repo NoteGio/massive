@@ -1,8 +1,8 @@
 package channels
 
 import (
-	"time"
 	"errors"
+	"time"
 )
 
 type mockConsumerChannel struct {

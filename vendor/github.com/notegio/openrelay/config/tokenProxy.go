@@ -5,12 +5,12 @@ import (
 	"encoding/hex"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/notegio/openrelay/types"
 	orCommon "github.com/notegio/openrelay/common"
 	"github.com/notegio/openrelay/exchangecontract"
+	"github.com/notegio/openrelay/types"
 	"gopkg.in/redis.v3"
-	"time"
 	"log"
+	"time"
 )
 
 type TokenProxy interface {
@@ -32,7 +32,7 @@ func (tokenProxy *staticTokenProxy) Set(address *types.Address) error {
 }
 
 type rpcTokenProxy struct {
-	conn bind.ContractBackend
+	conn             bind.ContractBackend
 	exchangeProxyMap map[types.Address]*types.Address
 }
 

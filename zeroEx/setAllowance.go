@@ -1,46 +1,48 @@
 package zeroEx
 
 import (
-  "flag"
-  "context"
-  "os"
+	"context"
 	"crypto/ecdsa"
-  "github.com/google/subcommands"
-  "github.com/notegio/massive/utils"
+	"flag"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-  "github.com/ethereum/go-ethereum/crypto"
-	tokenModule "github.com/notegio/openrelay/token"
+	"github.com/google/subcommands"
+	"github.com/notegio/massive/utils"
+	orCommon "github.com/notegio/openrelay/common"
 	"github.com/notegio/openrelay/config"
 	"github.com/notegio/openrelay/funds"
-	orCommon "github.com/notegio/openrelay/common"
+	tokenModule "github.com/notegio/openrelay/token"
 	"github.com/notegio/openrelay/types"
-  "io"
+	"io"
 	"log"
 	"math/big"
+	"os"
 	"sync"
 )
 
 type setAllowance struct {
-  inputFileName string
-  outputFileName string
-  inputFile *os.File
-  outputFile *os.File
-	unlimited bool
+	inputFileName  string
+	outputFileName string
+	inputFile      *os.File
+	outputFile     *os.File
+	unlimited      bool
 }
 
 func (p *setAllowance) FileNames() (string, string) {
-  return p.inputFileName, p.outputFileName
+	return p.inputFileName, p.outputFileName
 }
 
 func (p *setAllowance) SetIOFiles(inputFile, outputFile *os.File) {
-  p.inputFile, p.outputFile = inputFile, outputFile
+	p.inputFile, p.outputFile = inputFile, outputFile
 }
 
-func (*setAllowance) Name() string     { return "setAllowance" }
-func (*setAllowance) Synopsis() string { return "Set the 0x Exchange Address on each order for the specified network" }
+func (*setAllowance) Name() string { return "setAllowance" }
+func (*setAllowance) Synopsis() string {
+	return "Set the 0x Exchange Address on each order for the specified network"
+}
 func (*setAllowance) Usage() string {
-  return `msv 0x setAllowance [ETHEREUM_RPC_URL] [KEY_FILE] [--unlimited] [--input FILE] [--output FILE]:
+	return `msv 0x setAllowance [ETHEREUM_RPC_URL] [KEY_FILE] [--unlimited] [--input FILE] [--output FILE]:
   Set allowances on the target Ethereum host using the specified key for any
 	orders in the input file. Replays the orders on the output file after the
 	approvals have been confirmed. Orders may output in a different order than
@@ -53,8 +55,8 @@ func (*setAllowance) Usage() string {
 }
 
 func (p *setAllowance) SetFlags(f *flag.FlagSet) {
-  f.StringVar(&p.inputFileName, "input", "", "Input file [stdin]")
-  f.StringVar(&p.outputFileName, "output", "", "Output file [stdout]")
+	f.StringVar(&p.inputFileName, "input", "", "Input file [stdin]")
+	f.StringVar(&p.outputFileName, "output", "", "Output file [stdout]")
 	f.BoolVar(&p.unlimited, "unlimited", false, "Set unlimited allowances for ")
 }
 
@@ -76,15 +78,15 @@ func (p *setAllowance) Execute(_ context.Context, f *flag.FlagSet, _ ...interfac
 		return subcommands.ExitFailure
 	}
 	privKey, err := crypto.LoadECDSA(f.Arg(1))
-  if err != nil {
-    log.Printf("Error loading key: %v", err.Error())
-    return subcommands.ExitFailure
-  }
+	if err != nil {
+		log.Printf("Error loading key: %v", err.Error())
+		return subcommands.ExitFailure
+	}
 	balanceChecker, err := funds.NewRpcBalanceChecker(f.Arg(0))
 	if err != nil {
-    log.Printf("Error initializing balanceChecker: %v", err.Error())
-    return subcommands.ExitFailure
-  }
+		log.Printf("Error initializing balanceChecker: %v", err.Error())
+		return subcommands.ExitFailure
+	}
 	return SetAllowanceMain(p.inputFile, p.outputFile, conn, privKey, p.unlimited, tokenProxyCfg, feeTokenCfg, balanceChecker)
 }
 
@@ -120,23 +122,23 @@ func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient
 		_, ok = allowanceFutures[*order.Maker][*order.MakerToken]
 		if !ok {
 			allowanceFutures[*order.Maker][*order.MakerToken] = &allowanceFuture{
-					nil,
-					nil,
-					make(chan bool),
+				nil,
+				nil,
+				make(chan bool),
 			}
 			go allowanceFutures[*order.Maker][*order.MakerToken].Populate(order.Maker, order.MakerToken, order, balanceChecker, tokenProxyCfg, conn, key)
 		}
 		_, ok = allowanceFutures[*order.Maker][*feeTokenAddress]
 		if !ok {
 			allowanceFutures[*order.Maker][*feeTokenAddress] = &allowanceFuture{
-					nil,
-					nil,
-					make(chan bool),
+				nil,
+				nil,
+				make(chan bool),
 			}
 			go allowanceFutures[*order.Maker][*feeTokenAddress].Populate(order.Maker, feeTokenAddress, order, balanceChecker, tokenProxyCfg, conn, key)
 		}
 		wg.Add(1)
-		go func (order *types.Order) {
+		go func(order *types.Order) {
 			defer wg.Done()
 			_, err := allowanceFutures[*order.Maker][*order.MakerToken].Get()
 			if err != nil {
@@ -155,17 +157,18 @@ func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient
 		wg.Wait()
 		close(orderChannel)
 	}()
-  return <-exitStatusChannel
+	return <-exitStatusChannel
 }
 
 type allowanceFuture struct {
 	allowance *big.Int
-	err error
-	channel chan bool
+	err       error
+	channel   chan bool
 }
 
 func (future *allowanceFuture) Get() (*big.Int, error) {
-	for _ = range future.channel {}
+	for _ = range future.channel {
+	}
 	return future.allowance, future.err
 }
 
