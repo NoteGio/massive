@@ -60,7 +60,8 @@ func (p *getFees) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) 
 
 func GetFeesMain(targetURL string, inputFile io.Reader, outputFile io.Writer, makerShare float64) subcommands.ExitStatus {
   targetURL = strings.TrimSuffix(targetURL, "/")
-  for order := range orderScanner(inputFile) {
+	channel := orderScanner(inputFile)
+  for order := range channel {
     feeInput := &ingest.FeeInputPayload{}
     feeInput.Maker = order.Maker.String()
     emptyAddress := &types.Address{}
