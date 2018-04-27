@@ -55,6 +55,10 @@ func (p *setExchange) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *setExchange) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 0 {
+		os.Stderr.WriteString(p.Usage())
+		return subcommands.ExitUsageError
+	}
 	utils.SetIO(p)
 	if p.mainnet {
 		p.address = "0x12459c951127e0c374ff9105dda097662a027093"

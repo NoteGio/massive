@@ -46,6 +46,10 @@ func (p *expiration) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *expiration) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 1 {
+		os.Stderr.WriteString(p.Usage())
+		return subcommands.ExitUsageError
+	}
 	utils.SetIO(p)
 	value, ok := new(big.Int).SetString(f.Arg(0), 10)
 	if !ok {

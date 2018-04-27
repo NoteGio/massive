@@ -34,8 +34,8 @@ func (p *signOrder) SetIOFiles(inputFile, outputFile *os.File) {
 func (*signOrder) Name() string     { return "sign" }
 func (*signOrder) Synopsis() string { return "Add a signature to an order" }
 func (*signOrder) Usage() string {
-	return `msv 0x sign KEYFILE [--input FILE] [--output FILE]:
-  Add a salt to the order
+	return `msv 0x sign [--input FILE] [--output FILE] KEYFILE:
+  Sign the 0x order
 `
 }
 
@@ -47,6 +47,10 @@ func (p *signOrder) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *signOrder) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 1 {
+		os.Stderr.WriteString(p.Usage())
+		return subcommands.ExitUsageError
+	}
 	utils.SetIO(p)
 	privKey, err := crypto.LoadECDSA(f.Arg(0))
 	if err != nil {

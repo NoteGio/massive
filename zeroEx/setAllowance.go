@@ -42,7 +42,7 @@ func (*setAllowance) Synopsis() string {
 	return "Set the 0x Exchange Address on each order for the specified network"
 }
 func (*setAllowance) Usage() string {
-	return `msv 0x setAllowance [ETHEREUM_RPC_URL] [KEY_FILE] [--unlimited] [--input FILE] [--output FILE]:
+	return `msv 0x setAllowance [--unlimited] [--input FILE] [--output FILE] ETHEREUM_RPC_URL KEY_FILE:
   Set allowances on the target Ethereum host using the specified key for any
 	orders in the input file. Replays the orders on the output file after the
 	approvals have been confirmed. Orders may output in a different order than
@@ -61,6 +61,10 @@ func (p *setAllowance) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *setAllowance) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 2 {
+		os.Stderr.WriteString(p.Usage())
+		return subcommands.ExitUsageError
+	}
 	utils.SetIO(p)
 	conn, err := ethclient.Dial(f.Arg(0))
 	if err != nil {

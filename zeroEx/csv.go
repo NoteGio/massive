@@ -45,6 +45,9 @@ func (p *csvReader) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *csvReader) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 0 {
+		os.Stderr.WriteString(p.Usage())
+	}
 	utils.SetIO(p)
 	return CSVMain(p.inputFile, p.outputFile)
 }

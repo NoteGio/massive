@@ -54,6 +54,10 @@ func (p *getFees) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *getFees) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 0 {
+		os.Stderr.WriteString(p.Usage())
+		return subcommands.ExitUsageError
+	}
 	utils.SetIO(p)
 	return GetFeesMain(p.targetURL, p.inputFile, p.outputFile, p.makerShare)
 }

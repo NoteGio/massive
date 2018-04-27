@@ -47,6 +47,10 @@ func (p *upload) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *upload) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 0 {
+		os.Stderr.WriteString(p.Usage())
+		return subcommands.ExitUsageError
+	}
 	utils.SetIO(p)
 	return UploadMain(p.targetURL, p.inputFile, p.outputFile)
 }
