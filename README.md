@@ -8,19 +8,19 @@ will have other attributes.
 An example pipeline:
 
     # Read records out of a CSV
-    msv 0x csv --input transactions.csv | \
+    massive 0x csv --input transactions.csv | \
     # Get fees from the relayer
-    msv 0x getFees --target https://api.openrelay.xyz | \
+    massive 0x getFees --target https://api.openrelay.xyz | \
     # Add the current timestamp as a nonce
-    msv 0x timestampSalt | \
+    massive 0x timestampSalt | \
     # Set the expiration date for 10 days in the future
-    msv 0x expiration --duration 864000 | \
+    massive 0x expiration --duration 864000 | \
     # Sign with the provided key
-    msv 0x sign $KEY_FILE | \
+    massive 0x sign $KEY_FILE | \
     # Verify that the transaction is fillable
-    msv 0x verify | \
+    massive 0x verify | \
     # Upload the transaction to a 0x relayer
-    msv 0x upload --target https://api.openrelay.xyz
+    massive 0x upload --target https://api.openrelay.xyz
 
 This would get us from a CSV containing a list of tokens to be traded to
 uploaded 0x orders.
