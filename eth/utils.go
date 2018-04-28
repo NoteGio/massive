@@ -2,6 +2,7 @@ package eth
 
 import (
 	"math/big"
+	"encoding/json"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -126,4 +127,31 @@ func serializeBlock(b *types.Block, inclTx bool, fullTx bool) (map[string]interf
 	fields["uncles"] = uncleHashes
 
 	return fields, nil
+}
+
+
+
+type rpcBlock struct {
+	Hash         common.Hash      `json:"hash"`
+	Transactions []RPCTransaction `json:"transactions"`
+	UncleHashes  []common.Hash    `json:"uncles"`
+}
+
+type blockWithHeader struct {
+	*types.Header
+	*rpcBlock
+}
+
+
+func getBlock(raw []byte) (*blockWithHeader, error) {
+	// Decode header and transactions.
+	var head *types.Header
+	var body *rpcBlock
+	if err := json.Unmarshal(raw, &head); err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(raw, &body); err != nil {
+		return nil, err
+	}
+	return &blockWithHeader{head, body}, nil
 }

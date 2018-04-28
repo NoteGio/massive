@@ -35,7 +35,7 @@ func (*getBlocks) Synopsis() string {
 	return "Get Ethereum blocks from an RPC server and pipe them to --output"
 }
 func (*getBlocks) Usage() string {
-	return `msv 0x getBlocks [--fromBlock NUM] [--toBlock NUM] [--output FILE] ETHEREUM_RPC_URL:
+	return `msv eth getBlocks [--fromBlock NUM] [--toBlock NUM] [--output FILE] ETHEREUM_RPC_URL:
   Reads blocks from an RPC server and write them to the outputfile
 `
 }
