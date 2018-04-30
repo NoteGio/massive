@@ -21,6 +21,9 @@ func orderScanner(fd io.Reader) chan *types.Order {
 			}
 			channel <- order
 		}
+		if err := scanner.Err(); err != nil {
+			log.Fatalf("Error from scanner: %v", err.Error())
+		}
 		close(channel)
 	}()
 	return channel
