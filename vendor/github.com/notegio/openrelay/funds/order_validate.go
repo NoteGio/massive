@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/notegio/openrelay/config"
 	"github.com/notegio/openrelay/types"
+	"github.com/notegio/openrelay/channels"
 	"log"
 	"math/big"
 )
@@ -27,6 +28,11 @@ type boolOrErr struct {
 func (funds *orderValidator) checkBalance(tokenAddress, userAddress *types.Address, required []byte, respond chan boolOrErr) {
 	requiredInt := new(big.Int)
 	requiredInt.SetBytes(required[:])
+	if requiredInt.Cmp(big.NewInt(0)) == 0 {
+		// If the required amount is 0, there's no point in looking up the balance
+		respond <- boolOrErr{true, nil}
+		return
+	}
 	balance, err := funds.balanceChecker.GetBalance(tokenAddress, userAddress)
 	if err != nil {
 		log.Printf("'%v': '%v', '%v'", err.Error(), hex.EncodeToString(tokenAddress[:]), hex.EncodeToString(userAddress[:]))
@@ -39,6 +45,11 @@ func (funds *orderValidator) checkBalance(tokenAddress, userAddress *types.Addre
 func (funds *orderValidator) checkAllowance(tokenAddress, userAddress, proxyAddress *types.Address, required []byte, respond chan boolOrErr) {
 	requiredInt := new(big.Int)
 	requiredInt.SetBytes(required[:])
+	if requiredInt.Cmp(big.NewInt(0)) == 0 {
+		// If the required amount is 0, there's no point in looking up the allowance
+		respond <- boolOrErr{true, nil}
+		return
+	}
 	balance, err := funds.balanceChecker.GetAllowance(tokenAddress, userAddress, proxyAddress)
 	if err != nil {
 		log.Printf("'%v': '%v', '%v'", err.Error(), hex.EncodeToString(tokenAddress[:]), hex.EncodeToString(userAddress[:]))
@@ -77,35 +88,31 @@ func (funds *orderValidator) ValidateOrder(order *types.Order) (bool, error) {
 	feeChan := make(chan boolOrErr)
 	makerAllowanceChan := make(chan boolOrErr)
 	feeAllowanceChan := make(chan boolOrErr)
-	unavailableAmount := new(big.Int)
-	cancelledAmount := new(big.Int)
-	cancelledAmount.SetBytes(order.TakerTokenAmountCancelled[:])
-	unavailableAmount.SetBytes(order.TakerTokenAmountFilled[:])
-	unavailableAmount.Add(unavailableAmount, cancelledAmount)
+	unavailableAmount := order.TakerAssetAmountFilled.Big()
 	go funds.checkBalance(
-		order.MakerToken,
+		order.MakerAssetData.Address(),
 		order.Maker,
-		getRemainingAmount(unavailableAmount.Bytes(), order.TakerTokenAmount[:], order.MakerTokenAmount[:]),
+		getRemainingAmount(unavailableAmount.Bytes(), order.TakerAssetAmount[:], order.MakerAssetAmount[:]),
 		makerChan,
 	)
 	go funds.checkBalance(
 		feeToken,
 		order.Maker,
-		getRemainingAmount(unavailableAmount.Bytes(), order.TakerTokenAmount[:], order.MakerFee[:]),
+		getRemainingAmount(unavailableAmount.Bytes(), order.TakerAssetAmount[:], order.MakerFee[:]),
 		feeChan,
 	)
 	go funds.checkAllowance(
-		order.MakerToken,
+		order.MakerAssetData.Address(),
 		order.Maker,
 		proxyAddress,
-		getRemainingAmount(unavailableAmount.Bytes(), order.TakerTokenAmount[:], order.MakerTokenAmount[:]),
+		getRemainingAmount(unavailableAmount.Bytes(), order.TakerAssetAmount[:], order.MakerAssetAmount[:]),
 		makerAllowanceChan,
 	)
 	go funds.checkAllowance(
 		feeToken,
 		order.Maker,
 		proxyAddress,
-		getRemainingAmount(unavailableAmount.Bytes(), order.TakerTokenAmount[:], order.MakerFee[:]),
+		getRemainingAmount(unavailableAmount.Bytes(), order.TakerAssetAmount[:], order.MakerFee[:]),
 		feeAllowanceChan,
 	)
 	result := true
@@ -152,8 +159,12 @@ func (funds *orderValidator) ValidateOrder(order *types.Order) (bool, error) {
 	return result, nil
 }
 
-func NewRpcOrderValidator(rpcUrl string, feeToken config.FeeToken, tokenProxy config.TokenProxy) (OrderValidator, error) {
+func NewRpcOrderValidator(rpcUrl string, feeToken config.FeeToken, tokenProxy config.TokenProxy, invalidationChannel channels.ConsumerChannel) (OrderValidator, error) {
 	if checker, err := NewRpcBalanceChecker(rpcUrl); err == nil {
+		if invalidationChannel != nil {
+			invalidationChannel.AddConsumer(checker)
+			invalidationChannel.StartConsuming()
+		}
 		return &orderValidator{checker, feeToken, tokenProxy}, nil
 	} else {
 		return nil, err

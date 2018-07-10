@@ -5,12 +5,12 @@ import (
 	"encoding/hex"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/ethclient"
-	orCommon "github.com/notegio/openrelay/common"
-	"github.com/notegio/openrelay/exchangecontract"
 	"github.com/notegio/openrelay/types"
+	"github.com/notegio/openrelay/exchangecontract"
+	orCommon "github.com/notegio/openrelay/common"
 	"gopkg.in/redis.v3"
-	"log"
 	"time"
+	"log"
 )
 
 type FeeToken interface {
@@ -23,7 +23,7 @@ type staticFeeToken struct {
 }
 
 func (feeToken *staticFeeToken) Get(order *types.Order) (*types.Address, error) {
-	return feeToken.value, nil
+		return feeToken.value, nil
 }
 
 func (feeToken *staticFeeToken) Set(address *types.Address) error {
@@ -38,7 +38,7 @@ type redisFeeToken struct {
 }
 
 type rpcFeeToken struct {
-	conn             bind.ContractBackend
+	conn bind.ContractBackend
 	exchangeTokenMap map[types.Address]*types.Address
 }
 
@@ -52,12 +52,14 @@ func (feeToken *rpcFeeToken) Get(order *types.Order) (*types.Address, error) {
 		log.Printf("Error intializing exchange contract '%v': '%v'", hex.EncodeToString(order.ExchangeAddress[:]), err.Error())
 		return feeTokenAddress, err
 	}
-	feeTokenGethAddress, err := exchange.ZRX_TOKEN_CONTRACT(nil)
+	feeTokenAssetData, err := exchange.ZRX_ASSET_DATA(nil)
 	if err != nil {
-		log.Printf("Error getting fee token address for exhange %#x", order.ExchangeAddress)
+		log.Printf("Error getting fee token address for exchange %#x", order.ExchangeAddress)
 		return nil, err
 	}
-	copy(feeTokenAddress[:], feeTokenGethAddress[:])
+	feeTokenAsset := make(types.AssetData, len(feeTokenAssetData))
+	copy(feeTokenAsset[:], feeTokenAssetData[:])
+	feeTokenAddress = feeTokenAsset.Address()
 	feeToken.exchangeTokenMap[*order.ExchangeAddress] = feeTokenAddress
 	return feeTokenAddress, nil
 }

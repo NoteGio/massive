@@ -5,12 +5,12 @@ import (
 	"encoding/hex"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/notegio/openrelay/types"
 	orCommon "github.com/notegio/openrelay/common"
 	"github.com/notegio/openrelay/exchangecontract"
-	"github.com/notegio/openrelay/types"
 	"gopkg.in/redis.v3"
-	"log"
 	"time"
+	"log"
 )
 
 type TokenProxy interface {
@@ -32,7 +32,7 @@ func (tokenProxy *staticTokenProxy) Set(address *types.Address) error {
 }
 
 type rpcTokenProxy struct {
-	conn             bind.ContractBackend
+	conn bind.ContractBackend
 	exchangeProxyMap map[types.Address]*types.Address
 }
 
@@ -46,7 +46,7 @@ func (tokenProxy *rpcTokenProxy) Get(order *types.Order) (*types.Address, error)
 		log.Printf("Error intializing exchange contract '%v': '%v'", hex.EncodeToString(order.ExchangeAddress[:]), err.Error())
 		return tokenProxyAddress, err
 	}
-	tokenProxyGethAddress, err := exchange.TOKEN_TRANSFER_PROXY_CONTRACT(nil)
+	tokenProxyGethAddress, err := exchange.GetAssetProxy(nil, order.MakerAssetData.ProxyId())
 	if err != nil {
 		log.Printf("Error getting token proxy address for exhange %#x", order.ExchangeAddress)
 		return nil, err

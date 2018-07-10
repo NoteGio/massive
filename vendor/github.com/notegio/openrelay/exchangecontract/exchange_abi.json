@@ -1,0 +1,348 @@
+[
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "filled",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "cancelled",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "assetProxyId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "getAssetProxy",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "allowedValidators",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "preSigned",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "hash",
+        "type": "bytes32"
+      },
+      {
+        "name": "signerAddress",
+        "type": "address"
+      },
+      {
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "isValidSignature",
+    "outputs": [
+      {
+        "name": "isValid",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "ZRX_ASSET_DATA",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "VERSION",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "signerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "validatorAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "approved",
+        "type": "bool"
+      }
+    ],
+    "name": "SignatureValidatorApproval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "makerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "feeRecipientAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "takerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "senderAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "makerAssetFilledAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "takerAssetFilledAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "makerFeePaid",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "takerFeePaid",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "orderHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "makerAssetData",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "name": "takerAssetData",
+        "type": "bytes"
+      }
+    ],
+    "name": "Fill",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "makerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "feeRecipientAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "senderAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "orderHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "makerAssetData",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "name": "takerAssetData",
+        "type": "bytes"
+      }
+    ],
+    "name": "Cancel",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "makerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "senderAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "orderEpoch",
+        "type": "uint256"
+      }
+    ],
+    "name": "CancelUpTo",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "id",
+        "type": "bytes4"
+      },
+      {
+        "indexed": false,
+        "name": "newAssetProxy",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "oldAssetProxy",
+        "type": "address"
+      }
+    ],
+    "name": "AssetProxySet",
+    "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "orderEpoch",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+    }
+]

@@ -223,7 +223,7 @@ func (b *Uint64) UnmarshalText(input []byte) error {
 			return ErrSyntax
 		}
 		dec *= 16
-		dec += nib
+		dec += uint64(nib)
 	}
 	*b = Uint64(dec)
 	return nil

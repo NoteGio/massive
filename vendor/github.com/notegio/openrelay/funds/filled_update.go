@@ -8,41 +8,50 @@ import (
 	orCommon "github.com/notegio/openrelay/common"
 	"github.com/notegio/openrelay/exchangecontract"
 	"github.com/notegio/openrelay/types"
+	// "github.com/notegio/openrelay/channels"
+	"github.com/notegio/openrelay/fillbloom"
 	"log"
 	"math/big"
 )
 
 type FilledLookup interface {
-	GetAmountCancelled(order *types.Order) (*types.Uint256, error)
+	GetCancelled(order *types.Order) (bool, error)
 	GetAmountFilled(order *types.Order) (*types.Uint256, error)
 }
 
 type rpcFilledLookup struct {
 	conn bind.ContractBackend
+	fillBloom *fillbloom.FillBloom
 }
 
-func (filled *rpcFilledLookup) GetAmountCancelled(order *types.Order) (*types.Uint256, error) {
-	cancelledAmount := &types.Uint256{}
+func (filled *rpcFilledLookup) GetCancelled(order *types.Order) (bool, error) {
+	isCancelled := false
+	if filled.fillBloom != nil && filled.fillBloom.Initialized && !filled.fillBloom.Test(order.Hash()) {
+		log.Printf("Bloom filter missing order: %#x", order.Hash())
+		return isCancelled, nil
+	}
 	exchange, err := exchangecontract.NewExchange(orCommon.ToGethAddress(order.ExchangeAddress), filled.conn)
 	if err != nil {
 		log.Printf("Error intializing exchange contract '%v': '%v'", hex.EncodeToString(order.ExchangeAddress[:]), err.Error())
-		return cancelledAmount, err
+		return isCancelled, err
 	}
 	hash := [32]byte{}
 	copy(hash[:], order.Hash())
-	amount, err := exchange.Cancelled(nil, hash)
+	isCancelled, err = exchange.Cancelled(nil, hash)
 	if err != nil {
 		orderBytes := order.Bytes()
 		log.Printf("Error getting cancelled amount for order '%v': '%v'", hex.EncodeToString(orderBytes[:]), err.Error())
-		return cancelledAmount, err
+		return isCancelled, err
 	}
-	cancelledSlice := common.LeftPadBytes(amount.Bytes(), 32)
-	copy(cancelledAmount[:], cancelledSlice)
-	return cancelledAmount, nil
+	return isCancelled, nil
 }
 
 func (filled *rpcFilledLookup) GetAmountFilled(order *types.Order) (*types.Uint256, error) {
 	filledAmount := &types.Uint256{}
+	if filled.fillBloom != nil && filled.fillBloom.Initialized && !filled.fillBloom.Test(order.Hash()) {
+		log.Printf("Bloom filter missing order: %#x", order.Hash())
+		return filledAmount, nil
+	}
 	exchange, err := exchangecontract.NewExchange(orCommon.ToGethAddress(order.ExchangeAddress), filled.conn)
 	if err != nil {
 		log.Printf("Error intializing exchange contract '%v': '%v'", hex.EncodeToString(order.ExchangeAddress[:]), err.Error())
@@ -61,31 +70,29 @@ func (filled *rpcFilledLookup) GetAmountFilled(order *types.Order) (*types.Uint2
 	return filledAmount, nil
 }
 
-// TODO: Test FilledChecker
-// TODO: Make FundCheckRelay update order with TakerTokenAmountFilled
 
-func NewRpcFilledLookup(rpcUrl string) (FilledLookup, error) {
-	conn, err := ethclient.Dial(rpcUrl)
+func NewRPCFilledLookup(rpcURL string, fillBloom *fillbloom.FillBloom) (FilledLookup, error) {
+	conn, err := ethclient.Dial(rpcURL)
 	if err != nil {
 		return nil, err
 	}
-	return &rpcFilledLookup{conn}, nil
+	if fillBloom != nil {
+		fillBloom.Initialize(conn, 0, []common.Address{})
+	}
+	return &rpcFilledLookup{conn, fillBloom}, nil
 }
 
 type MockFilledLookup struct {
-	cancelled *big.Int
+	cancelled bool
 	filled    *big.Int
 	err       error
 }
 
-func (filled *MockFilledLookup) GetAmountCancelled(order *types.Order) (*types.Uint256, error) {
-	result := &types.Uint256{}
+func (filled *MockFilledLookup) GetCancelled(order *types.Order) (bool, error) {
 	if filled.err != nil {
-		return result, filled.err
+		return false, filled.err
 	}
-	filledSlice := common.LeftPadBytes(filled.cancelled.Bytes(), 32)
-	copy(result[:], filledSlice)
-	return result, nil
+	return filled.cancelled, nil
 }
 func (filled *MockFilledLookup) GetAmountFilled(order *types.Order) (*types.Uint256, error) {
 	result := &types.Uint256{}
@@ -97,10 +104,8 @@ func (filled *MockFilledLookup) GetAmountFilled(order *types.Order) (*types.Uint
 	return result, nil
 }
 
-func NewMockFilledLookup(cancelled, filled string, err error) FilledLookup {
-	cancelledInt := new(big.Int)
-	cancelledInt.SetString(cancelled, 10)
+func NewMockFilledLookup(cancelled bool, filled string, err error) FilledLookup {
 	filledInt := new(big.Int)
 	filledInt.SetString(filled, 10)
-	return &MockFilledLookup{cancelledInt, filledInt, err}
+	return &MockFilledLookup{cancelled, filledInt, err}
 }

@@ -14,6 +14,7 @@ import (
 	"math/big"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type IngestError struct {
@@ -52,18 +53,18 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 	ValidExchangeAddresses := []types.Address{}
 	// TODO: Look up valid exchanges from Redis dynamically
 	addrBytes := &types.Address{}
-	addr, _ := hex.DecodeString("12459c951127e0c374ff9105dda097662a027093")
-	copy(addrBytes[:], addr)
-	ValidExchangeAddresses = append(ValidExchangeAddresses, *addrBytes)
-	addr, _ = hex.DecodeString("479cc461fecd078f766ecc58533d6f69580cf3ac")
-	copy(addrBytes[:], addr)
-	ValidExchangeAddresses = append(ValidExchangeAddresses, *addrBytes)
-	addr, _ = hex.DecodeString("90fe2af704b34e0224bf2299c838e04d4dcf1364")
-	copy(addrBytes[:], addr)
-	ValidExchangeAddresses = append(ValidExchangeAddresses, *addrBytes)
-	addr, _ = hex.DecodeString("b69e673309512a9d726f87304c6984054f87a93b")
-	copy(addrBytes[:], addr)
-	ValidExchangeAddresses = append(ValidExchangeAddresses, *addrBytes)
+	knownExchanges := []string{
+		"12459c951127e0c374ff9105dda097662a027093",
+		"479cc461fecd078f766ecc58533d6f69580cf3ac",
+		"90fe2af704b34e0224bf2299c838e04d4dcf1364",
+		"b69e673309512a9d726f87304c6984054f87a93b",
+		"48bacb9266a570d521063ef5dd96e61686dbe788",
+	}
+	for _, addrString := range knownExchanges {
+		addr, _ := hex.DecodeString(addrString)
+		copy(addrBytes[:], addr)
+		ValidExchangeAddresses = append(ValidExchangeAddresses, *addrBytes)
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			// Health checks
@@ -79,16 +80,9 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 		}
 		order := types.Order{}
 		if contentType == "application/octet-stream" {
-			var data [441]byte
+			var data [1024]byte
 			length, err := r.Body.Read(data[:])
-			if length != 377 {
-				returnError(w, IngestError{
-					100,
-					"Orders should be exactly 377 bytes",
-					nil,
-				}, 400)
-				return
-			} else if err != nil && err != io.EOF {
+			if err != nil && err != io.EOF {
 				log.Printf(err.Error())
 				returnError(w, IngestError{
 					100,
@@ -97,7 +91,15 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 				}, 500)
 				return
 			}
-			order.FromBytes(data)
+			if err := order.FromBytes(data[:length]); err != nil {
+				log.Printf("Error parsing order: %v", err.Error())
+				returnError(w, IngestError{
+					100,
+					"Error parsing order",
+					nil,
+				}, 500)
+				return
+			}
 		} else if contentType == "application/json" {
 			var data [1024]byte
 			jsonLength, err := r.Body.Read(data[:])
@@ -128,16 +130,26 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 			return
 		}
 		// At this point we've errored out, or we have an Order object
-		emptyBytes := [20]byte{}
-		if !bytes.Equal(order.Taker[:], emptyBytes[:]) {
-			log.Printf("'%v' != '%v'", hex.EncodeToString(order.Taker[:]), hex.EncodeToString(emptyBytes[:]))
+		if !order.MakerAssetData.SupportedType() {
 			returnError(w, IngestError{
 				100,
 				"Validation Failed",
 				[]ValidationError{ValidationError{
-					"taker",
-					1002,
-					"Taker address must be empty",
+					"makerAssetData",
+					1006,
+					fmt.Sprintf("Unsupported asset type: %#x", order.MakerAssetData.ProxyId()),
+				}},
+			}, 400)
+			return
+		}
+		if !order.TakerAssetData.SupportedType() {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"takerAssetData",
+					1006,
+					fmt.Sprintf("Unsupported asset type: %#x", order.TakerAssetData.ProxyId()),
 				}},
 			}, 400)
 			return
@@ -154,14 +166,52 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 			}, 400)
 			return
 		}
-		if !order.Signature.Verify(order.Maker) {
+		if !order.Signature.Supported() {
 			returnError(w, IngestError{
 				100,
 				"Validation Failed",
 				[]ValidationError{ValidationError{
-					"ecSignature",
+					"signature",
+					1005,
+					"Unsupported signature type",
+				}},
+			}, 400)
+			return
+		}
+		if !order.Signature.Verify(order.Maker, order.Hash()) {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"signature",
 					1005,
 					"Signature validation failed",
+				}},
+			}, 400)
+			return
+		}
+		bigTime := big.NewInt(time.Now().Unix())
+		if order.ExpirationTimestampInSec.Big().Cmp(bigTime) < 0 {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"expirationUnixTimestampSec",
+					1004,
+					"Order already expired",
+				}},
+			}, 400)
+			return
+		}
+		futureTime := big.NewInt(0).Add(bigTime, big.NewInt(31536000000))
+		if futureTime.Cmp(order.ExpirationTimestampInSec.Big()) < 0 {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"expirationUnixTimestampSec",
+					1004,
+					"Expiration in distant future",
 				}},
 			}, 400)
 			return
@@ -173,6 +223,7 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 		go func() {
 			feeRecipient, err := affiliates.Get(order.FeeRecipient)
 			if err != nil {
+				log.Printf("Error retrieving fee recipient: %v", err.Error())
 				affiliateChan <- nil
 			} else {
 				affiliateChan <- feeRecipient
@@ -193,7 +244,7 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 				[]ValidationError{ValidationError{
 					"feeRecipient",
 					1002,
-					"Invalid fee recpient",
+					"Invalid fee recipient",
 				}},
 			}, 402)
 			return

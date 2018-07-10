@@ -1,15 +1,24 @@
 package channels
 
+import (
+	"github.com/notegio/openrelay/common"
+	"sync"
+)
+
 type DelayRelay struct {
 	*Relay
 	sourcePublisher Publisher
 	sentinel        string
 	delayChan       chan bool
+	once            *sync.Once
 }
 
 func (relay *DelayRelay) Flush() {
-	relay.sourcePublisher.Publish(relay.sentinel)
-	relay.delayChan <- true
+	relay.once.Do(func() {
+		relay.sourcePublisher.Publish(relay.sentinel)
+		relay.delayChan <- true
+		relay.once = &sync.Once{}
+	})
 }
 
 type DelayRelayFilter struct {
@@ -43,10 +52,12 @@ func NewDelayRelay(sourcePublisher Publisher, channel ConsumerChannel, publisher
 			channel,
 			[]Publisher{publisher},
 			&DelayRelayFilter{sentinel, delayChan},
+			make(common.Semaphore, 1), // DelayRelays can't handle concurrency > 1
 		},
 		sourcePublisher,
 		sentinel,
 		delayChan,
+		&sync.Once{},
 	}
 	relay.consumerChannel.AddConsumer(&RelayConsumer{relay.Relay})
 	sourcePublisher.Publish(sentinel)
