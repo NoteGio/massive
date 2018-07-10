@@ -16,7 +16,7 @@ import (
 func TestSignOrderReplace(t *testing.T) {
 	order := &types.Order{}
 	order.Initialize()
-	if order.Signature.Verify(order.Maker) {
+	if order.Signature.Verify(order.Maker, order.Hash()) {
 		t.Errorf("Initial order unexpectedly has valid signature")
 	}
 	key, _ := ecdsa.GenerateKey(crypto.S256(), rand.Reader)
@@ -37,8 +37,8 @@ func TestSignOrderReplace(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
 	}
-	if !processedOrder.Signature.Verify(processedOrder.Maker) {
-		t.Errorf("Signature should be valid")
+	if !processedOrder.Signature.Verify(processedOrder.Maker, processedOrder.Hash()) {
+		t.Errorf("Signature should be valid: %#x", processedOrder.Signature[:])
 	}
 	if !bytes.Equal(processedOrder.Maker[:], address[:]) {
 		t.Errorf("Address mismatch: %v != %v", processedOrder.Maker, address)
@@ -48,7 +48,7 @@ func TestSignOrderReplace(t *testing.T) {
 func TestSignOrderNoReplace(t *testing.T) {
 	order := &types.Order{}
 	order.Initialize()
-	if order.Signature.Verify(order.Maker) {
+	if order.Signature.Verify(order.Maker, order.Hash()) {
 		t.Errorf("Initial order unexpectedly has valid signature")
 	}
 	key, _ := ecdsa.GenerateKey(crypto.S256(), rand.Reader)
@@ -69,7 +69,7 @@ func TestSignOrderNoReplace(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
 	}
-	if processedOrder.Signature.Verify(processedOrder.Maker) {
+	if processedOrder.Signature.Verify(processedOrder.Maker, processedOrder.Hash()) {
 		t.Errorf("Signature should not be valid")
 	}
 	if bytes.Equal(processedOrder.Maker[:], address[:]) {
@@ -80,7 +80,7 @@ func TestSignOrderNoReplace(t *testing.T) {
 func TestSignOrderErrReplaceSame(t *testing.T) {
 	order := &types.Order{}
 	order.Initialize()
-	if order.Signature.Verify(order.Maker) {
+	if order.Signature.Verify(order.Maker, order.Hash()) {
 		t.Errorf("Initial order unexpectedly has valid signature")
 	}
 	key, _ := ecdsa.GenerateKey(crypto.S256(), rand.Reader)
@@ -102,7 +102,7 @@ func TestSignOrderErrReplaceSame(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error parsing '%v': %v", string(outputBuffer.Bytes()), err.Error())
 	}
-	if !processedOrder.Signature.Verify(order.Maker) {
+	if !processedOrder.Signature.Verify(order.Maker, processedOrder.Hash()) {
 		t.Errorf("Signature should be valid")
 	}
 	if !bytes.Equal(order.Maker[:], address[:]) {
@@ -113,7 +113,7 @@ func TestSignOrderErrReplaceSame(t *testing.T) {
 func TestSignOrderErrReplaceDifferent(t *testing.T) {
 	order := &types.Order{}
 	order.Initialize()
-	if order.Signature.Verify(order.Maker) {
+	if order.Signature.Verify(order.Maker, order.Hash()) {
 		t.Errorf("Initial order unexpectedly has valid signature")
 	}
 	key, _ := ecdsa.GenerateKey(crypto.S256(), rand.Reader)

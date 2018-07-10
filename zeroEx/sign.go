@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/subcommands"
 	"github.com/notegio/massive/utils"
+	"github.com/notegio/openrelay/types"
 	"io"
 	"log"
 	"os"
@@ -76,15 +77,16 @@ func SignOrderMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.Private
 			}
 		}
 		copy(order.Maker[:], address[:])
-		copy(order.Signature.Hash[:], order.Hash())
 
-		hashedBytes := append([]byte("\x19Ethereum Signed Message:\n32"), order.Signature.Hash[:]...)
+		hashedBytes := append([]byte("\x19Ethereum Signed Message:\n32"), order.Hash()...)
 		signedBytes := crypto.Keccak256(hashedBytes)
 
 		sig, _ := crypto.Sign(signedBytes, key)
-		copy(order.Signature.R[:], sig[0:32])
-		copy(order.Signature.S[:], sig[32:64])
-		order.Signature.V = sig[64] + 27
+		order.Signature = make(types.Signature, 66)
+		order.Signature[0] = sig[64]
+		copy(order.Signature[1:33], sig[0:32])
+		copy(order.Signature[33:65], sig[32:64])
+		order.Signature[65] = types.SigTypeEthSign
 		utils.WriteRecord(order, outputFile)
 	}
 	return subcommands.ExitSuccess

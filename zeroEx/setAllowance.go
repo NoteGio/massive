@@ -123,14 +123,14 @@ func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient
 		if !ok {
 			allowanceFutures[*order.Maker] = make(map[types.Address]*allowanceFuture)
 		}
-		_, ok = allowanceFutures[*order.Maker][*order.MakerToken]
+		_, ok = allowanceFutures[*order.Maker][*order.MakerAssetData.Address()]
 		if !ok {
-			allowanceFutures[*order.Maker][*order.MakerToken] = &allowanceFuture{
+			allowanceFutures[*order.Maker][*order.MakerAssetData.Address()] = &allowanceFuture{
 				nil,
 				nil,
 				make(chan bool),
 			}
-			go allowanceFutures[*order.Maker][*order.MakerToken].Populate(order.Maker, order.MakerToken, order, balanceChecker, tokenProxyCfg, conn, key)
+			go allowanceFutures[*order.Maker][*order.MakerAssetData.Address()].Populate(order.Maker, order.MakerAssetData.Address(), order, balanceChecker, tokenProxyCfg, conn, key)
 		}
 		_, ok = allowanceFutures[*order.Maker][*feeTokenAddress]
 		if !ok {
@@ -144,7 +144,7 @@ func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient
 		wg.Add(1)
 		go func(order *types.Order) {
 			defer wg.Done()
-			_, err := allowanceFutures[*order.Maker][*order.MakerToken].Get()
+			_, err := allowanceFutures[*order.Maker][*order.MakerAssetData.Address()].Get()
 			if err != nil {
 				orderChannel <- nil
 				log.Printf("Error getting / setting allowance %v", err.Error())

@@ -13,7 +13,6 @@ import (
 	"log"
 	"math/big"
 	"os"
-	"strconv"
 )
 
 type csvReader struct {
@@ -88,26 +87,27 @@ func CSVMain(inputFile io.Reader, outputFile io.Writer) subcommands.ExitStatus {
 			}
 			copy(order.Maker[:], addressBytes)
 		}
-		if idx, ok := headerMap["makerTokenAddress"]; ok {
-			var addressBytes []byte
+		if idx, ok := headerMap["makerAssetData"]; ok {
+			var assetDataBytes []byte
 			if record[idx] == "" {
-				addressBytes = []byte{}
+				assetDataBytes = []byte{}
 			} else {
-				addressBytes, err = hex.DecodeString(record[idx][2:])
+				assetDataBytes, err = hex.DecodeString(record[idx][2:])
 				if err != nil {
-					log.Printf("Error parsing maker makerTokenAddress record %v: %v. Dropping Record.", counter, err.Error())
+					log.Printf("Error parsing maker makerAssetData record %v: %v. Dropping Record.", counter, err.Error())
 					continue
 				}
 			}
-			copy(order.MakerToken[:], addressBytes)
+			order.MakerAssetData = make(types.AssetData, len(assetDataBytes))
+			copy(order.MakerAssetData[:], assetDataBytes)
 		}
-		if idx, ok := headerMap["makerTokenAmount"]; ok {
+		if idx, ok := headerMap["makerAssetAmount"]; ok {
 			value, ok := new(big.Int).SetString(record[idx], 10)
 			if !ok {
 				log.Printf("Error parsing  makerTokenAmount in record %v: %v. Dropping Record.", counter, record[idx])
 				continue
 			}
-			copy(order.MakerTokenAmount[:], abi.U256(value))
+			copy(order.MakerAssetAmount[:], abi.U256(value))
 		}
 		if idx, ok := headerMap["makerFee"]; ok {
 			value, ok := new(big.Int).SetString(record[idx], 10)
@@ -130,26 +130,27 @@ func CSVMain(inputFile io.Reader, outputFile io.Writer) subcommands.ExitStatus {
 			}
 			copy(order.Taker[:], addressBytes)
 		}
-		if idx, ok := headerMap["takerTokenAddress"]; ok {
-			var addressBytes []byte
+		if idx, ok := headerMap["takerAssetData"]; ok {
+			var assetDataBytes []byte
 			if record[idx] == "" {
-				addressBytes = []byte{}
+				assetDataBytes = []byte{}
 			} else {
-				addressBytes, err = hex.DecodeString(record[idx][2:])
+				assetDataBytes, err = hex.DecodeString(record[idx][2:])
 				if err != nil {
-					log.Printf("Error parsing maker takerTokenAddress record %v: %v. Dropping Record.", counter, err.Error())
+					log.Printf("Error parsing takerAssetData record %v: %v. Dropping Record.", counter, err.Error())
 					continue
 				}
 			}
-			copy(order.TakerToken[:], addressBytes)
+			order.TakerAssetData = make(types.AssetData, len(assetDataBytes))
+			copy(order.TakerAssetData[:], assetDataBytes)
 		}
-		if idx, ok := headerMap["takerTokenAmount"]; ok {
+		if idx, ok := headerMap["takerAssetAmount"]; ok {
 			value, ok := new(big.Int).SetString(record[idx], 10)
 			if !ok {
-				log.Printf("Error parsing  takerTokenAmount in record %v: %v. Dropping Record.", counter, record[idx])
+				log.Printf("Error parsing  takerAssetAmount in record %v: %v. Dropping Record.", counter, record[idx])
 				continue
 			}
-			copy(order.TakerTokenAmount[:], abi.U256(value))
+			copy(order.TakerAssetAmount[:], abi.U256(value))
 		}
 		if idx, ok := headerMap["takerFee"]; ok {
 			value, ok := new(big.Int).SetString(record[idx], 10)
@@ -188,29 +189,13 @@ func CSVMain(inputFile io.Reader, outputFile io.Writer) subcommands.ExitStatus {
 			}
 			copy(order.Salt[:], abi.U256(value))
 		}
-		if idx, ok := headerMap["ecSignature.v"]; ok {
-			i, err := strconv.Atoi(record[idx])
-			if err != nil {
-				log.Printf("Error parsing ecSignature.v in record %v: %v. Dropping Record.", counter, err.Error())
-				continue
-			}
-			order.Signature.V = byte(i)
-		}
-		if idx, ok := headerMap["ecSignature.r"]; ok {
+		if idx, ok := headerMap["signature"]; ok {
 			dataBytes, err := hex.DecodeString(record[idx][2:])
 			if err != nil {
-				log.Printf("Error parsing ecSignature.r in record %v: %v. Dropping Record.", counter, err.Error())
+				log.Printf("Error parsing signature in record %v: %v. Dropping Record.", counter, err.Error())
 				continue
 			}
-			copy(order.Signature.R[:], dataBytes)
-		}
-		if idx, ok := headerMap["ecSignature.s"]; ok {
-			dataBytes, err := hex.DecodeString(record[idx][2:])
-			if err != nil {
-				log.Printf("Error parsing ecSignature.s in record %v: %v. Dropping Record.", counter, err.Error())
-				continue
-			}
-			copy(order.Signature.S[:], dataBytes)
+			copy(order.Signature, dataBytes)
 		}
 		if idx, ok := headerMap["exchangeContractAddress"]; ok {
 			var addressBytes []byte
