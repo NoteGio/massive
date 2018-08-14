@@ -344,5 +344,19 @@
     "payable": false,
     "stateMutability": "view",
     "type": "function"
-    }
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "targetOrderEpoch",
+        "type": "uint256"
+      }
+    ],
+    "name": "cancelOrdersUpTo",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ]

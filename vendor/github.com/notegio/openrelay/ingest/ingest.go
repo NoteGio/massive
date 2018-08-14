@@ -54,11 +54,9 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 	// TODO: Look up valid exchanges from Redis dynamically
 	addrBytes := &types.Address{}
 	knownExchanges := []string{
-		"12459c951127e0c374ff9105dda097662a027093",
-		"479cc461fecd078f766ecc58533d6f69580cf3ac",
-		"90fe2af704b34e0224bf2299c838e04d4dcf1364",
-		"b69e673309512a9d726f87304c6984054f87a93b",
+		"b65619b82c4d385de0c5b4005452c2fdee0f86d1",
 		"48bacb9266a570d521063ef5dd96e61686dbe788",
+		"90fe2af704b34e0224bf2299c838e04d4dcf1364",
 	}
 	for _, addrString := range knownExchanges {
 		addr, _ := hex.DecodeString(addrString)
@@ -212,6 +210,30 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 					"expirationUnixTimestampSec",
 					1004,
 					"Expiration in distant future",
+				}},
+			}, 400)
+			return
+		}
+		if big.NewInt(0).Cmp(order.TakerAssetAmount.Big()) == 0 {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"TakerAssetAmount",
+					1004,
+					"takerAssetAmount must be > 0",
+				}},
+			}, 400)
+			return
+		}
+		if big.NewInt(0).Cmp(order.MakerAssetAmount.Big()) == 0 {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"MakerAssetAmount",
+					1004,
+					"makerAssetAmount must be > 0",
 				}},
 			}, 400)
 			return

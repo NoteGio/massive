@@ -83,7 +83,7 @@ func SignOrderMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.Private
 
 		sig, _ := crypto.Sign(signedBytes, key)
 		order.Signature = make(types.Signature, 66)
-		order.Signature[0] = sig[64]
+		order.Signature[0] = sig[64] + 27
 		copy(order.Signature[1:33], sig[0:32])
 		copy(order.Signature[33:65], sig[32:64])
 		order.Signature[65] = types.SigTypeEthSign

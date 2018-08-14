@@ -16,7 +16,6 @@ func doLookup(order *types.Order, oldValue *types.Uint256, lookupFn func(*types.
 		value = oldValue
 	}
 	valChan <- value
-	log.Printf("%v - %v", value, oldValue)
 	changeChan <- !reflect.DeepEqual(value, oldValue)
 }
 
@@ -52,7 +51,7 @@ func (consumer *FillConsumer) Consume(msg channels.Delivery) {
 		changes := make(chan bool, 2)
 		go doLookupBoolean(order, order.Cancelled, consumer.lookup.GetCancelled, cancelledChan, changes)
 		go doLookup(order, order.TakerAssetAmountFilled, consumer.lookup.GetAmountFilled, filledChan, changes)
-		order.Cancelled = <-cancelledChan
+		order.Cancelled = <-cancelledChan || order.Cancelled
 		order.TakerAssetAmountFilled = <-filledChan
 		payload := string(order.Bytes())
 		if (<-changes || <-changes) && consumer.changePublisher != nil {

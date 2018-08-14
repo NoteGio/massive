@@ -11,7 +11,7 @@ import (
 	"github.com/notegio/massive/utils"
 	orCommon "github.com/notegio/openrelay/common"
 	"github.com/notegio/openrelay/config"
-	"github.com/notegio/openrelay/funds"
+	"github.com/notegio/openrelay/funds/balance"
 	tokenModule "github.com/notegio/openrelay/token"
 	"github.com/notegio/openrelay/types"
 	"io"
@@ -86,7 +86,7 @@ func (p *setAllowance) Execute(_ context.Context, f *flag.FlagSet, _ ...interfac
 		log.Printf("Error loading key: %v", err.Error())
 		return subcommands.ExitFailure
 	}
-	balanceChecker, err := funds.NewRpcBalanceChecker(f.Arg(0))
+	balanceChecker, err := balance.NewRpcRoutingBalanceChecker(f.Arg(0))
 	if err != nil {
 		log.Printf("Error initializing balanceChecker: %v", err.Error())
 		return subcommands.ExitFailure
@@ -94,12 +94,12 @@ func (p *setAllowance) Execute(_ context.Context, f *flag.FlagSet, _ ...interfac
 	return SetAllowanceMain(p.inputFile, p.outputFile, conn, privKey, p.unlimited, tokenProxyCfg, feeTokenCfg, balanceChecker)
 }
 
-func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient.Client, key *ecdsa.PrivateKey, unlimited bool, tokenProxyCfg config.TokenProxy, feeTokenCfg config.FeeToken, balanceChecker funds.BalanceChecker) subcommands.ExitStatus {
+func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient.Client, key *ecdsa.PrivateKey, unlimited bool, tokenProxyCfg config.TokenProxy, feeTokenCfg config.FeeToken, balanceChecker balance.BalanceChecker) subcommands.ExitStatus {
 	if !unlimited {
 		log.Printf("Currently only unlimited allowances are supported. Add the '--unlimited' to use this tool.")
 		return subcommands.ExitFailure
 	}
-	allowanceFutures := make(map[types.Address]map[types.Address]*allowanceFuture)
+	allowanceFutures := make(map[types.Address]map[string]*allowanceFuture)
 	orderChannel := make(chan *types.Order)
 	exitStatusChannel := make(chan subcommands.ExitStatus)
 	var wg sync.WaitGroup
@@ -121,35 +121,35 @@ func SetAllowanceMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient
 		}
 		_, ok := allowanceFutures[*order.Maker]
 		if !ok {
-			allowanceFutures[*order.Maker] = make(map[types.Address]*allowanceFuture)
+			allowanceFutures[*order.Maker] = make(map[string]*allowanceFuture)
 		}
-		_, ok = allowanceFutures[*order.Maker][*order.MakerAssetData.Address()]
+		_, ok = allowanceFutures[*order.Maker][string(order.MakerAssetData)]
 		if !ok {
-			allowanceFutures[*order.Maker][*order.MakerAssetData.Address()] = &allowanceFuture{
+			allowanceFutures[*order.Maker][string(order.MakerAssetData)] = &allowanceFuture{
 				nil,
 				nil,
 				make(chan bool),
 			}
-			go allowanceFutures[*order.Maker][*order.MakerAssetData.Address()].Populate(order.Maker, order.MakerAssetData.Address(), order, balanceChecker, tokenProxyCfg, conn, key)
+			go allowanceFutures[*order.Maker][string(order.MakerAssetData)].Populate(order.Maker, order.MakerAssetData, order, balanceChecker, tokenProxyCfg, conn, key)
 		}
-		_, ok = allowanceFutures[*order.Maker][*feeTokenAddress]
+		_, ok = allowanceFutures[*order.Maker][string(feeTokenAddress)]
 		if !ok {
-			allowanceFutures[*order.Maker][*feeTokenAddress] = &allowanceFuture{
+			allowanceFutures[*order.Maker][string(feeTokenAddress)] = &allowanceFuture{
 				nil,
 				nil,
 				make(chan bool),
 			}
-			go allowanceFutures[*order.Maker][*feeTokenAddress].Populate(order.Maker, feeTokenAddress, order, balanceChecker, tokenProxyCfg, conn, key)
+			go allowanceFutures[*order.Maker][string(feeTokenAddress)].Populate(order.Maker, feeTokenAddress, order, balanceChecker, tokenProxyCfg, conn, key)
 		}
 		wg.Add(1)
 		go func(order *types.Order) {
 			defer wg.Done()
-			_, err := allowanceFutures[*order.Maker][*order.MakerAssetData.Address()].Get()
+			_, err := allowanceFutures[*order.Maker][string(order.MakerAssetData)].Get()
 			if err != nil {
 				orderChannel <- nil
 				log.Printf("Error getting / setting allowance %v", err.Error())
 			}
-			_, err = allowanceFutures[*order.Maker][*feeTokenAddress].Get()
+			_, err = allowanceFutures[*order.Maker][string(feeTokenAddress)].Get()
 			if err != nil {
 				orderChannel <- nil
 				log.Printf("Error getting / setting allowance %v", err.Error())
@@ -176,17 +176,17 @@ func (future *allowanceFuture) Get() (*big.Int, error) {
 	return future.allowance, future.err
 }
 
-func (future *allowanceFuture) Populate(makerAddress, tokenAddress *types.Address, order *types.Order, balanceChecker funds.BalanceChecker, tokenProxyCfg config.TokenProxy, conn *ethclient.Client, key *ecdsa.PrivateKey) {
+func (future *allowanceFuture) Populate(makerAddress *types.Address, tokenAssetData types.AssetData, order *types.Order, balanceChecker balance.BalanceChecker, tokenProxyCfg config.TokenProxy, conn *ethclient.Client, key *ecdsa.PrivateKey) {
 	unlimitedAllowance := new(big.Int).Sub(new(big.Int).Exp(big.NewInt(2), big.NewInt(256), nil), big.NewInt(1))
 	tokenProxyAddress, err := tokenProxyCfg.Get(order)
-	allowance, err := balanceChecker.GetAllowance(tokenAddress, makerAddress, tokenProxyAddress)
+	allowance, err := balanceChecker.GetAllowance(tokenAssetData, makerAddress, tokenProxyAddress)
 	if err != nil {
 		future.err = err
 		close(future.channel)
 		return
 	}
 	if new(big.Int).Rsh(unlimitedAllowance, 2).Cmp(allowance) > 0 {
-		token, err := tokenModule.NewToken(orCommon.ToGethAddress(tokenAddress), conn)
+		token, err := tokenModule.NewToken(orCommon.ToGethAddress(tokenAssetData.Address()), conn)
 		if err != nil {
 			future.err = err
 			close(future.channel)

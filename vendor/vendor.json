@@ -396,86 +396,92 @@
 		{
 			"checksumSHA1": "nz3cxHYhRaI+UwQrmnS+SAmJFVA=",
 			"path": "github.com/notegio/openrelay/accounts",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "A+AzS0A7/PzGuT7psMzXXhhhjL0=",
 			"path": "github.com/notegio/openrelay/affiliates",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "RgyZAulkV4jTHp5izmCX6tC2nS0=",
 			"path": "github.com/notegio/openrelay/aws",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "EF9CUqdB+VjnrmFXci/k4bMGJzo=",
 			"path": "github.com/notegio/openrelay/channels",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
-			"checksumSHA1": "vPgZ0BHrKwAPnLU3T4Zjrv4jNSE=",
+			"checksumSHA1": "dyvmVvXDLEwOgQxAaxmBw1JdHkY=",
 			"path": "github.com/notegio/openrelay/common",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
-			"checksumSHA1": "QC9ATbp0HOIiH2IAsJLif7Dpfug=",
+			"checksumSHA1": "vxaQdxJLT/p7p/hSPo50T5EJiiM=",
 			"path": "github.com/notegio/openrelay/config",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "cFMpcptfaguLsw29mqg3iy6FKG0=",
 			"path": "github.com/notegio/openrelay/db",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
-			"checksumSHA1": "yxl+5HTZSUU/LN5dPnbfgEscwqM=",
+			"checksumSHA1": "3Emy3RkfKSvTSHVzMKk+tou+JCY=",
 			"path": "github.com/notegio/openrelay/exchangecontract",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "6IZxqcCHJH25nqNN0Dgx4/JRhQQ=",
 			"path": "github.com/notegio/openrelay/fillbloom",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
-			"checksumSHA1": "LqadK6giSo+K/enV3fanIyvHe8Q=",
+			"checksumSHA1": "aS/yDCBebid7MDj3dcMfSIzg7Ms=",
 			"path": "github.com/notegio/openrelay/funds",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
-			"checksumSHA1": "0K1Vt8Ug/x+OPS9PjL07D0q9LNc=",
+			"checksumSHA1": "fAn31xncBP1xRnRlHBC8l539PcM=",
+			"path": "github.com/notegio/openrelay/funds/balance",
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
+		},
+		{
+			"checksumSHA1": "JzGeoQKXMQv5kF0gOFna44jaQTo=",
 			"path": "github.com/notegio/openrelay/ingest",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "DB0B5ch6YfK4Pma8AwFbgND7uRw=",
 			"path": "github.com/notegio/openrelay/objectstorage",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "QDGsJC+bjHH/hEjHBxooIl+tSQQ=",
 			"path": "github.com/notegio/openrelay/token",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
-			"checksumSHA1": "iGgj2asmThWiKC0BqAA4anIXDxg=",
+			"checksumSHA1": "PB9arrcIozh08Gz3naB65LHbpWE=",
 			"path": "github.com/notegio/openrelay/types",
-			"revision": "9a5805c5858a1265947fb5dd1aa04a7b2daa38ac",
-			"revisionTime": "2018-07-09T22:01:47Z"
+			"revision": "02187724523c41654a0ae843c2730abfb1c7d863",
+			"revisionTime": "2018-08-13T17:00:44Z"
 		},
 		{
 			"checksumSHA1": "Se195FlZ160eaEk/uVx4KdTPSxU=",
