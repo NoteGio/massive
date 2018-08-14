@@ -79,7 +79,7 @@ func GetFeesMain(targetURL string, inputFile io.Reader, outputFile io.Writer, ma
 			log.Printf("Error serializing order: %v", err.Error())
 			return subcommands.ExitFailure
 		}
-		resp, err := http.Post(fmt.Sprintf("%v/v0/fees", targetURL), "application/json", bytes.NewReader(data))
+		resp, err := http.Post(fmt.Sprintf("%v/v1/fees", targetURL), "application/json", bytes.NewReader(data))
 		if err != nil {
 			log.Printf("Getting fees from %v: %v", targetURL, err.Error())
 			return subcommands.ExitFailure

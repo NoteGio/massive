@@ -65,7 +65,7 @@ func UploadMain(targetURL string, inputFile io.Reader, outputFile io.Writer) sub
 			log.Printf("Error serializing order: %v", err.Error())
 			return subcommands.ExitFailure
 		}
-		resp, err := http.Post(fmt.Sprintf("%v/v0/order", targetURL), "application/json", bytes.NewReader(data))
+		resp, err := http.Post(fmt.Sprintf("%v/v1/order", targetURL), "application/json", bytes.NewReader(data))
 		if err != nil {
 			log.Printf("Error uploading order to %v: %v", targetURL, err.Error())
 			return subcommands.ExitFailure
