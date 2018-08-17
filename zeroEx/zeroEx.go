@@ -31,6 +31,8 @@ func (p *ZeroExCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}
 	commander.Register(&csvReader{}, "")
 	commander.Register(&setExchange{}, "")
 	commander.Register(&setAllowance{}, "")
+	commander.Register(&queryOrders{}, "")
+	commander.Register(&fillOrder{}, "")
 	commander.Register(commander.HelpCommand(), "")
 	commander.Register(commander.FlagsCommand(), "")
 	commander.Register(commander.CommandsCommand(), "")
