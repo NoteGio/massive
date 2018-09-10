@@ -25,10 +25,6 @@ func (tokenProxy *staticTokenProxy) Get(order *types.Order) (*types.Address, err
 	return tokenProxy.value, nil
 }
 
-func (tokenProxy *staticTokenProxy) GetById(order *types.Order, proxyID [4]byte) (*types.Address, error) {
-	return tokenProxy.value, nil
-}
-
 func (tokenProxy *staticTokenProxy) Set(address *types.Address) error {
 	tokenProxy.value = address
 	return nil
@@ -44,7 +40,7 @@ func (tokenProxy *rpcTokenProxy) Get(order *types.Order) (*types.Address, error)
 }
 func (tokenProxy *rpcTokenProxy) GetById(order *types.Order, proxyID [4]byte) (*types.Address, error) {
 	tokenProxyAddress := &types.Address{}
-	if tokenProxyAddress, ok := tokenProxy.exchangeProxyMap[*order.ExchangeAddress][proxyID]; ok {
+	if tokenProxyAddress, ok := tokenProxy.exchangeProxyMap[*order.ExchangeAddress][proxyId]; ok {
 		return tokenProxyAddress, nil
 	}
 	exchange, err := exchangecontract.NewExchange(orCommon.ToGethAddress(order.ExchangeAddress), tokenProxy.conn)
@@ -58,10 +54,6 @@ func (tokenProxy *rpcTokenProxy) GetById(order *types.Order, proxyID [4]byte) (*
 		return nil, err
 	}
 	copy(tokenProxyAddress[:], tokenProxyGethAddress[:])
-	_, ok := tokenProxy.exchangeProxyMap[*order.ExchangeAddress]
-	if !ok {
-		tokenProxy.exchangeProxyMap[*order.ExchangeAddress] = make(map[[4]byte]*types.Address)
-	}
 	tokenProxy.exchangeProxyMap[*order.ExchangeAddress][proxyID] = tokenProxyAddress
 	return tokenProxyAddress, nil
 }
@@ -72,7 +64,41 @@ func (tokenProxy *rpcTokenProxy) Set(value *types.Address) error {
 	return nil
 }
 
+<<<<<<< Updated upstream
+type redisTokenProxy struct {
+	redisClient     *redis.Client
+	cachedValue     *types.Address
+	cacheExpiration int64
+}
+
+func (tokenProxy *redisTokenProxy) Get(order *types.Order) (*types.Address, error) {
+	if tokenProxy.cacheExpiration > time.Now().Unix() {
+		// The token proxy shouldn't change often, but it doesn't hurt to check
+		// periodically.
+		return tokenProxy.cachedValue, nil
+	}
+	result := &types.Address{}
+	val, err := tokenProxy.redisClient.Get("tokenProxy::address").Result()
+	if err != nil {
+		return result, err
+	}
+	addressSlice, err := hex.DecodeString(val)
+	if err != nil {
+		return result, err
+	}
+
+	copy(result[:], addressSlice[:])
+	return result, nil
+}
+
+func (tokenProxy *redisTokenProxy) Set(value *types.Address) error {
+	return tokenProxy.redisClient.Set("tokenProxy::address", hex.EncodeToString(value[:]), 0).Err()
+}
+
 func NewRpcTokenProxy(rpcURL string) (TokenProxy, error) {
+=======
+func NewRpcTokenProxy(rpcURL string) (FeeToken, error) {
+>>>>>>> Stashed changes
 	conn, err := ethclient.Dial(rpcURL)
 	if err != nil {
 		return nil, err
@@ -83,7 +109,7 @@ func NewRpcTokenProxy(rpcURL string) (TokenProxy, error) {
 		// function we call isn't important, but SyncProgress is pretty cheap.
 		return nil, err
 	}
-	return &rpcTokenProxy{conn, make(map[types.Address]map[[4]byte]*types.Address)}, nil
+	return &rpcTokenProxy{conn, make(map[types.Address]*types.Address)}, nil
 }
 
 func StaticTokenProxy(address *types.Address) TokenProxy {
