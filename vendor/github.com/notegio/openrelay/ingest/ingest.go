@@ -48,22 +48,8 @@ func returnError(w http.ResponseWriter, errResp IngestError, status int) {
 	w.Write(errBytes)
 }
 
-func Handler(publisher channels.Publisher, accounts accountsModule.AccountService, affiliates affiliatesModule.AffiliateService) func(http.ResponseWriter, *http.Request) {
+func Handler(publisher channels.Publisher, accounts accountsModule.AccountService, affiliates affiliatesModule.AffiliateService, tm TermsManager, exchangeLookup ExchangeLookup) func(http.ResponseWriter, *http.Request) {
 	var contentType string
-	ValidExchangeAddresses := []types.Address{}
-	// TODO: Look up valid exchanges from Redis dynamically
-	addrBytes := &types.Address{}
-	knownExchanges := []string{
-		"a458ec0709468996ef2ef668f5e52f37ceb66627",
-		"b65619b82c4d385de0c5b4005452c2fdee0f86d1",
-		"48bacb9266a570d521063ef5dd96e61686dbe788",
-		"90fe2af704b34e0224bf2299c838e04d4dcf1364",
-	}
-	for _, addrString := range knownExchanges {
-		addr, _ := hex.DecodeString(addrString)
-		copy(addrBytes[:], addr)
-		ValidExchangeAddresses = append(ValidExchangeAddresses, *addrBytes)
-	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			// Health checks
@@ -128,6 +114,8 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 			}, 415)
 			return
 		}
+		knownExchange := exchangeLookup.ExchangeIsKnown(order.ExchangeAddress)
+		signedMaker := tm.CheckAddress(order.Maker)
 		// At this point we've errored out, or we have an Order object
 		if !order.MakerAssetData.SupportedType() {
 			returnError(w, IngestError{
@@ -149,18 +137,6 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 					"takerAssetData",
 					1006,
 					fmt.Sprintf("Unsupported asset type: %#x", order.TakerAssetData.ProxyId()),
-				}},
-			}, 400)
-			return
-		}
-		if !valInList(order.ExchangeAddress, ValidExchangeAddresses) {
-			returnError(w, IngestError{
-				100,
-				"Validation Failed",
-				[]ValidationError{ValidationError{
-					"exchangeContractAddress",
-					1002,
-					"Unknown exchangeContractAddress",
 				}},
 			}, 400)
 			return
@@ -253,6 +229,30 @@ func Handler(publisher channels.Publisher, accounts accountsModule.AccountServic
 			}
 		}()
 		go func() { makerChan <- accounts.Get(order.Maker) }()
+		if !(<-signedMaker) {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"makerAddress",
+					1002,
+					"makerAddress must sign terms of service",
+				}},
+			}, 401)
+			return
+		}
+		if !(<-knownExchange) {
+			returnError(w, IngestError{
+				100,
+				"Validation Failed",
+				[]ValidationError{ValidationError{
+					"exchangeContractAddress",
+					1002,
+					"Unknown exchangeContractAddress",
+				}},
+			}, 400)
+			return
+		}
 		makerFee := new(big.Int)
 		takerFee := new(big.Int)
 		totalFee := new(big.Int)
