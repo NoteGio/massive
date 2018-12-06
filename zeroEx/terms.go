@@ -125,14 +125,10 @@ func TermsMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.PrivateKey,
 	nonce := <-FindValidNonce(termsPayload.Text, fmt.Sprintf("%v", now.Unix()), termsPayload.Mask[:])
 
 
-	termsSha := sha3.NewKeccak256()
-	termsSha.Write([]byte(fmt.Sprintf("%v\n%v\n%#x", termsPayload.Text, now.Unix(), nonce)))
-	hash := termsSha.Sum(nil)
-
-	log.Printf("\nHash: %#x\n Mask: %#x\nNonce: %#x\n", hash, termsPayload.Mask[:], nonce)
+	signedData := []byte(fmt.Sprintf("%v\n%v\n%#x", termsPayload.Text, now.Unix(), nonce))
 
 	address := common.BytesToOrAddress(crypto.PubkeyToAddress(key.PublicKey))
-	hashedBytes := append([]byte("\x19Ethereum Signed Message:\n32"), hash...)
+	hashedBytes := append([]byte(fmt.Sprintf("\x19Ethereum Signed Message:\n%v", len(signedData))), signedData...)
 	signedBytes := crypto.Keccak256(hashedBytes)
 
 	sig, _ := crypto.Sign(signedBytes, key)
