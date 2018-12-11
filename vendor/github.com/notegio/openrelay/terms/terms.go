@@ -11,6 +11,7 @@ import (
 	"time"
 	"io"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -72,7 +73,7 @@ func TermsHandler(db *gorm.DB) func(http.ResponseWriter, *http.Request) {
 				Mask: &types.Uint256{},
 				MaskID: mask_id,
 			}
-			copy(tf.Mask[:], mask[:])
+			copy(tf.Mask[32 - len(mask):], mask[:])
 			data, err := json.Marshal(tf)
 			if err != nil {
 				returnError(w, IngestError{101, err.Error()}, 500)
@@ -80,10 +81,15 @@ func TermsHandler(db *gorm.DB) func(http.ResponseWriter, *http.Request) {
 			}
 			w.WriteHeader(200)
 			w.Header().Set("Content-Type", "application/json")
+			// The hashmask we're returning will in 30 - 60 minutes. Setting a max
+			// age of 25 minutes ensures anything served from cloudfront is good for
+			// at least 5 minutes.
+			w.Header().Set("Cache-Control", "max-age=1500, public")
 			w.Write(data)
 		} else if r.Method == "POST" {
 			var data [1024]byte
-			payload := &TermsSigPayload{}
+			sig := make(types.Signature, 66)
+			payload := &TermsSigPayload{Signature: &sig}
 			jsonLength, err := r.Body.Read(data[:])
 			if err != nil && err != io.EOF {
 				log.Printf(err.Error())
@@ -153,7 +159,37 @@ func TermsHandler(db *gorm.DB) func(http.ResponseWriter, *http.Request) {
 				}, 400)
 				return
 			}
+			log.Printf("Saved Signature from: %v", payload.Address)
 			w.WriteHeader(202)
+		} else {
+			returnError(w, IngestError{100, fmt.Sprintf("Unsupported Method: %v", r.Method)}, 405)
+		}
+	}
+}
+
+func TermsCheckHandler(db *gorm.DB) func(http.ResponseWriter, *http.Request) {
+	tm := dbModule.NewTermsManager(db)
+	orderRegex := regexp.MustCompile(".*/_tos/0x([0-9a-fA-F]+)")
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			pathMatch := orderRegex.FindStringSubmatch(r.URL.Path)
+			if len(pathMatch) == 0 {
+				returnError(w, IngestError{100, "Malformed address"}, 404)
+				return
+			}
+			hashHex := pathMatch[1]
+			hashBytes, err := hex.DecodeString(hashHex)
+			if err != nil {
+				returnError(w, IngestError{100, err.Error()}, 404)
+				return
+			}
+			address := &types.Address{}
+			copy(address[:], hashBytes[:])
+			if <-tm.CheckAddress(address) {
+				w.WriteHeader(204)
+			} else {
+				w.WriteHeader(404)
+			}
 		} else {
 			returnError(w, IngestError{100, fmt.Sprintf("Unsupported Method: %v", r.Method)}, 405)
 		}

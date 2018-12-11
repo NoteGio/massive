@@ -116,10 +116,15 @@ func TermsMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.PrivateKey,
 		return subcommands.ExitFailure
 	}
 
-	fmt.Fprintf(os.Stderr, "%v\nPress Enter to Agree...", termsPayload.Text)
+	fmt.Fprintf(os.Stderr, "%v\n\nDo you agree to these terms? (yes / no) ", termsPayload.Text)
 
 	reader := bufio.NewReader(os.Stdin)
-	reader.ReadString('\n')
+	conf, _ := reader.ReadString('\n')
+	if conf != "yes\n" {
+		fmt.Fprintf(os.Stderr, "Please type 'yes' to confirm.\n")
+		return subcommands.ExitFailure
+	}
+
 
 	now := time.Now()
 	nonce := <-FindValidNonce(termsPayload.Text, fmt.Sprintf("%v", now.Unix()), termsPayload.Mask[:])
@@ -161,6 +166,8 @@ func TermsMain(inputFile io.Reader, outputFile io.Writer, key *ecdsa.PrivateKey,
 		log.Printf("Error submitting terms: %v", string(bodyContent))
 		return subcommands.ExitFailure
 	}
+
+	log.Printf("Terms signed successfully!")
 
 	return subcommands.ExitSuccess
 }
