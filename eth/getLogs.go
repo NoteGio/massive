@@ -12,6 +12,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 )
 
 type getLogs struct {
@@ -21,6 +22,7 @@ type getLogs struct {
 	outputFile     *os.File
 	fromBlock      int
 	toBlock        int
+	stepSize       int
 	topics         []string
 }
 
@@ -47,6 +49,7 @@ func (p *getLogs) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&p.outputFileName, "output", "", "Output file [stdout]")
 	f.IntVar(&p.fromBlock, "fromBlock", 0, "The starting block")
 	f.IntVar(&p.toBlock, "toBlock", -1, "The ending block")
+	f.IntVar(&p.stepSize, "stepSize", 1000, "The number of blocks to retrieve in one request")
 	f.StringVar(&p.topics[0], "topic0", "", "topic0")
 	f.StringVar(&p.topics[1], "topic1", "", "topic1")
 	f.StringVar(&p.topics[2], "topic2", "", "topic2")
@@ -65,7 +68,7 @@ func (p *getLogs) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) 
 		log.Printf("Error establishing Ethereum connection: %v", err.Error())
 		return subcommands.ExitFailure
 	}
-	return GetLogsMain(p.inputFile, p.outputFile, conn, int64(p.fromBlock), int64(p.toBlock), p.topics)
+	return GetLogsMain(p.inputFile, p.outputFile, conn, int64(p.fromBlock), int64(p.toBlock), int64(p.stepSize), p.topics)
 }
 
 func min(a, b int64) int64 {
@@ -83,8 +86,8 @@ func stringToHash(hexString string) ([]common.Hash) {
 	}
 }
 
-func GetLogsMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient.Client, fromBlock, toBlock int64, topics []string) subcommands.ExitStatus {
-	for i := fromBlock; i < toBlock; i = min(i+1000, toBlock) {
+func GetLogsMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient.Client, fromBlock, toBlock, stepSize int64, topics []string) subcommands.ExitStatus {
+	for i := fromBlock; i < toBlock; i = min(i+stepSize, toBlock) {
 		topicHashes := [][]common.Hash{}
 		topicBuffer := [][]common.Hash{}
 		for _, topic := range topics {
@@ -96,19 +99,26 @@ func GetLogsMain(inputFile io.Reader, outputFile io.Writer, conn *ethclient.Clie
 		}
 		query := ethereum.FilterQuery{
 			FromBlock: big.NewInt(i),
-			ToBlock: big.NewInt(min(i+1000, toBlock)),
+			ToBlock: big.NewInt(min(i+stepSize, toBlock)),
 			Addresses: nil,
 			Topics: topicHashes,
 		}
-		logs, err := conn.FilterLogs(context.Background(), query)
-		if err != nil {
-			log.Printf("Error filtering: %v", err.Error())
-			return subcommands.ExitFailure
-		}
-		for _, itemLog := range logs {
-			if err := utils.WriteRecord(itemLog, outputFile); err != nil {
-				log.Printf("Error writing record: %v", err.Error())
-				return subcommands.ExitFailure
+		for j := 0; ; j++ {
+			logs, err := conn.FilterLogs(context.Background(), query)
+			if err != nil {
+				if j > 5 {
+					log.Printf("Error filtering: %v", err.Error())
+					return subcommands.ExitFailure
+				}
+				time.Sleep(1 * time.Second)
+			} else {
+				for _, itemLog := range logs {
+					if err := utils.WriteRecord(itemLog, outputFile); err != nil {
+						log.Printf("Error writing record: %v", err.Error())
+						return subcommands.ExitFailure
+					}
+				}
+				break
 			}
 		}
 	}

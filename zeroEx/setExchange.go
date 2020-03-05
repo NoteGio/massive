@@ -65,7 +65,7 @@ func (p *setExchange) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	} else if p.ropsten {
 		p.address = "0x479cc461fecd078f766ecc58533d6f69580cf3ac"
 	} else if p.kovan {
-		p.address = "0x90fe2af704b34e0224bf2299c838e04d4dcf1364"
+		p.address = "0x35dd2932454449b14cee11a94d3674a936d5d7b2"
 	} else if p.rinkeby {
 		p.address = "0x1d16ef40fac01cec8adac2ac49427b9384192c05"
 	} else if p.testrpc {
