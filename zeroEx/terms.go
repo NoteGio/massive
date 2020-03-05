@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"golang.org/x/crypto/sha3"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/crypto/sha3"
 	"github.com/google/subcommands"
 	"github.com/notegio/massive/utils"
 	"github.com/notegio/openrelay/types"
@@ -73,7 +73,7 @@ func FindValidNonce(text, timestamp string, mask []byte) (<-chan []byte) {
 		for !CheckMask(mask, hash) {
 			nonce = make([]byte, 32)
 			rand.Read(nonce[:])
-			termsSha := sha3.NewKeccak256()
+			termsSha := sha3.NewLegacyKeccak256()
 			termsSha.Write([]byte(fmt.Sprintf("%v\n%v\n%#x", text, timestamp, nonce)))
 			hash = termsSha.Sum(nil)
 		}
